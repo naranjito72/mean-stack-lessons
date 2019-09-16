@@ -1,18 +1,16 @@
+@import url(//fonts.googleapis.com/css?family=Droid+Serif);
+@import url(//fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+@import url(https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.min.css);
 
-    @import url(//fonts.googleapis.com/css?family=Droid+Serif);
-    @import url(//fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
-    @import url(https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.min.css);  
-
-    body {
-      font-family: 'Droid Serif';
-    }
+body {
+  font-family: "Droid Serif";
+}
 /* 
     remark-slide-scaler{
       max-height:90vh;
     } */
-    #header {
-
-      font-family: "Myriad Pro", myriad-pro, "Helvetica Neue", Helvetica,
+#header {
+  font-family: "Myriad Pro", myriad-pro, "Helvetica Neue", Helvetica,
     "Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans",
     Corbel, Verdana, sans-serif;
 
@@ -21,134 +19,138 @@
   margin: 0.75em auto 0.25em;
   color: #777;
   position: relative;
-} 
+}
 
 #header a {
-    color: #777;
-    text-decoration: none;
+  color: #777;
+  text-decoration: none;
+  font-size: 1.5em;
+}
+#header a+span {
+  
+  font-size: 1.5em;
 }
 
 #header a:hover {
   color: #222;
 }
-    h1,
-    h2,
-    h3 {
-      font-family: 'Yanone Kaffeesatz';
-      font-weight: 400;
-      margin-bottom: 0;
-      margin-top: 10px;
-    }
+h1,
+h2,
+h3 {
+  font-family: "Yanone Kaffeesatz";
+  font-weight: 400;
+  margin-bottom: 0;
+  margin-top: 10px;
+}
 
-    h1 {
-      font-size: 3.5em;
-    }
+h1 {
+  font-size: 3.5em;
+}
 
-    h2 {
-      font-size: 2em;
-    }
+h2 {
+  font-size: 2em;
+}
 
-    h3 {
-      font-size: 1.4em;
-    }
+h3 {
+  font-size: 1.4em;
+}
 
-    .inverse {
-      background: #272822;
-      color: #777872;
-      text-shadow: 0 0 20px #333;
-    }
+.inverse {
+  background: #272822;
+  color: #777872;
+  text-shadow: 0 0 20px #333;
+}
 
-    .inverse h1,
-    .inverse h2 {
-      color: #f3f3f3;
-      line-height: 0.8em;
-    }
+.inverse h1,
+.inverse h2 {
+  color: #f3f3f3;
+  line-height: 0.8em;
+}
 
-    img.big {
-      width: 10%;
-      height: 10%;
-    }
-    .centered{
-    width:50%;
-    height:50%;
-    display:block; 
-    margin-left:auto;
-    margin-right: auto
-    }
-    pre {
-      /*   border-left: 0.4em solid #d7d7d7; */
-      padding: .2em !important;
-    }
+img.big {
+  width: 10%;
+  height: 10%;
+}
+.centered {
+  width: 50%;
+  height: 50%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+pre {
+  /*   border-left: 0.4em solid #d7d7d7; */
+  padding: 0.2em !important;
+}
 
+.codigo,
+.codigo-dir {
+  color: #080;
+}
 
-    .codigo, .codigo-dir {
-      color: #080;
-    }
+.codigo::before {
+  content: "$";
+  color: darkgray;
+}
+.codigo-dir::before {
+  content: "worknode";
+  color: darkgray;
+}
+code {
+  background: transparent !important;
+}
 
-    .codigo::before{
-      content: "$";
-      color: darkgray;
-    }
-    .codigo-dir::before{
-      content: "worknode";
-      color: darkgray;
-    }
-    code {
-      background: transparent !important;
-    }
+a {
+  color: #f92672;
+  text-decoration: none;
+  /* font-size:0.5em;  */
+}
 
-    a {
-      color: #F92672;
-      text-decoration: none;
-      /* font-size:0.5em;  */
-    }
+.task {
+  float: right;
+  font-size: 0.9em;
+  padding-top: 0.6em;
+}
+.remark-container.grid {
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: 0.5fr 9fr;
+}
 
-    .task {
-      float: right;
-      font-size: 0.9em;
-      padding-top: 0.6em;
-    }
-    .remark-container.grid{
-      display:grid;
-      grid-template-columns: auto;
-      grid-template-rows: 0.5fr 9fr;
-    }
+.nosql.grid {
+  display: grid;
+  margin-top: 5em;
+  grid-template-columns: auto auto auto;
+  grid-template-rows: auto auto auto auto;
+  grid-gap: 1em;
+}
 
-     .nosql.grid {
-      display:grid;
-      margin-top: 5em;
-      grid-template-columns: auto auto auto;
-      grid-template-rows: auto auto auto auto;
-      grid-gap: 1em;
+.nosql.grid > div {
+  border: solid 1px #080;
+  font-weight: bold;
+  padding: 1em;
+}
 
-    } 
+.task a {
+  color: #080;
+  text-decoration: none;
+}
 
-     .nosql.grid > div {
-      border: solid 1px #080;
-      font-weight: bold;
-      padding: 1em;
-    } 
+.right {
+  float: right;
+  margin-left: 1em;
+}
 
-    .task a {
-      color: #080;
-      text-decoration: none;
-    }
+.pushdown {
+  margin-top: 12em;
+}
 
-    .right {
-      float: right;
-      margin-left: 1em;
-    }
+p {
+  height: normal;
+  /* line-height: 1.5em; */
+}
 
-    .pushdown {
-      margin-top: 12em;
-    }
-
-    p{
-      height: normal;
-      /* line-height: 1.5em; */
-    }
-
-    /* Tables */
+/* Tables */
 table {
   border-top: double #999897;
   border-bottom: thin solid #999897;
@@ -156,7 +158,8 @@ table {
   margin: 0 auto;
   text-align: justify;
 }
-th, td {
+th,
+td {
   padding: 0.5em 0.5em;
   /* padding-bottom: 0.5em; */
   border-bottom: thin solid #999897;
