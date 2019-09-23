@@ -43,25 +43,26 @@ Estructura de datos que mantiene información acerca de los valores de campos es
 name: 1fn
 task: [<< índice de contenidos >>](#contenido)
 
-### La Primera Forma Normal (1FN)
-Partimos de la estructura de datos clásica de un [modelo relacional](https://es.wikipedia.org/wiki/Modelo_relacional)
-<br>
-<br>
+### Índice campo único
 
-| id| name | Phone |
-|--------------------|------|-----------|
-| 3212  | John  | 555-111-1234 | 
-| 4324  | Willy | 555-222-2345 |
-| 6542  | James | 555-222-6789  |
+Función __`createIndex(clave:orden)`__:
 
-<br>
-Si queremos almacenar más de un teléfono ya no podemos disponer de la primera forma normal:
+  - clave: que se usará para crear el índice
+  - orden: dirección de ordenación del índice: 1 ascendente y -1 descendente
 
-| id| name | Phone |
-|--------------------|------|-----------|
-| 3212  | John  | 555-111-1234 | 
-| 4324  | Willy | 555-222-2345;555-212-2322 |
-| 6542  | James | 555-222-6789;555-334-3411  |
+El índice se creará para todos los valores de la clave indicada para todos los documentos de la colección:
+
+db.posts.createIndex(“Etiquetas”:1)
+
+
+Para indexar un documento embebido:
+
+db.posts.createIndex(“comentarios.contador”:1)
+
+
+Si se indexa un array, se incluyen todos los elementos del array en el índice, pero no se puede indicar el orden dentro del array.
+
+Para consultar los índices:__` db.collection.getIndexes()`__
 
 
 ---
