@@ -4,7 +4,7 @@ class: center, middle, inverse
 ###<img src="https://imgur.com/StvjTKm.png" width=50% height=50% alt="logo">  
 ---
 
-name: base de datos
+name: indexación
 class: center, middle, inverse
 ## [Data Modelling](#bbdd)
 ---
@@ -17,19 +17,35 @@ task: &nbsp;
 
 ---
 
-### Modelado de datos en MongoDB
+### Indexación
 
-Una de las ventajas de MongoDB es su __esquema flexible__. Esto nos permite crear documentos con diferente estructura, incluso tener documentos con campos completamente diferentes dentro de la misma colección. No obstante, el escenario más común es agrupar documentos con una estructura similar dentro de la misma colección
+Estructura de datos que mantiene información acerca de los valores de campos específicos en los documentos de una colección
 
-Cuando se diseña un modelo de datos de una base de datos, se debe tener en cuenta los tipos de datos que se utilizarán en la aplicación. La clave es entender cual es la estructura de documentos más idónea y cual es la relación entre esos documentos que mejor responda a las necesidades de la aplicación.
+- Se utiliza para ordenar y clasificar rápidamente los documentos de una colección
 
-La relación entre documentos se puede representar de dos maneras:
+- Se asegura una búsqueda y recuperación rápida de datos de los documentos
 
-- Documentos embebidos
-- Relación por referencia
+- Cuando se crea un índice, aumenta la velocidad de las consultas, pero se reduce la velocidad de las inserciones y las eliminaciones
+
+- Deben mantenerse (borrarse o reconstruirse) por:
+    + Limpiar algunas irregularidades que aparecen en los índices.
+    + Aumento del tamaño de la base de datos.
+    + Espacio excesivo ocupado por los índices. Solo se pueden definir como máximo cuarenta índices por colección.
 
 ---
+### Tipos de índices
 
+- [Campo Único](https://docs.mongodb.com/manual/core/index-single/)
+- [Compuestos](https://docs.mongodb.com/manual/core/index-compound/)
+- [Multiclave](https://docs.mongodb.com/manual/core/index-multikey/)
+- [Texto](https://docs.mongodb.com/manual/core/index-text/)
+- [Comodín](https://docs.mongodb.com/manual/core/index-wildcard/)
+- [2dspheres](https://docs.mongodb.com/manual/core/2dsphere/)
+- [2d](https://docs.mongodb.com/manual/core/2d/)
+- [geoHaystack](https://docs.mongodb.com/manual/core/geohaystack/)
+- [Hashed](https://docs.mongodb.com/manual/core/index-hashed/)
+  
+---
 name: 1fn
 task: [<< índice de contenidos >>](#contenido)
 
