@@ -1,9 +1,3 @@
-
-class: center, middle, inverse
-
-###<img src="https://imgur.com/StvjTKm.png" width=50% height=50% alt="logo">  
----
-
 name: indexación
 class: center, middle, inverse
 ## [Data Modelling](#bbdd)
