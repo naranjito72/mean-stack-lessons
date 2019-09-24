@@ -66,6 +66,7 @@ Para consultar los índices:__` db.collection.getIndexes()`__
 
 
 ---
+name:Compuestos
 ### Índices compuestos
 
 Mantienen bajo el número de índices de una colección. Se deben utilizar siempre que sean posible
