@@ -71,5 +71,5 @@ task: [<< índice de contenidos >>](#contenido)
 name:ejemplo
 ### Ejemplo
 
-![](https://docs.mongodb.com/manual/_images/map-reduce.bakedsvg.svg)
+<img src="https://docs.mongodb.com/manual/_images/map-reduce.bakedsvg.svg" width=75% height=75%>
 ---
