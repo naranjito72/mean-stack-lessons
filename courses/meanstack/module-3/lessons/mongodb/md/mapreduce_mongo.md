@@ -88,7 +88,7 @@ db.frases.insert({_id:3,frase:"no me digas que no"})
 ```
 
 Queremos contar el número de repeticiones de cada palabra.
-???
+
 ```javascript
 var mapFunctionFrase = function(){
    x = this.frase.split(" ");
@@ -120,7 +120,7 @@ db.sesiones.insert({nombre:"Aniceto", mes:"Abril", distKm:5, tiempoMin:33})
 ```
 
 Queremos saber cuántos kilómetros a recorrido cada persona al mes usando _MapReduce_:
-???
+
 ```javascript
 var mapKmPersonaMes = function(){
         emit({nombre:this.nombre, mes:this.mes}, this.distKm);
