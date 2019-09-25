@@ -69,7 +69,68 @@ task: [<< índice de contenidos >>](#contenido)
 
 ---
 name:ejemplo
-### Ejemplo
+### Ejemplo 1
 
 <img src="https://docs.mongodb.com/manual/_images/map-reduce.bakedsvg.svg" width=75% height=75%>
+
+
 ---
+
+### Ejemplo 2
+
+Partimos de la siguiente colección:
+
+```javascript
+db.frases.drop()
+db.frases.insert({_id:1,frase:"el que sabe no habla"})
+db.frases.insert({_id:2,frase:"el que habla no sabe"})
+db.frases.insert({_id:3,frase:"no me digas que no"})
+```
+
+Queremos contar el número de repeticiones de cada palabra.
+???
+```javascript
+var mapFunctionFrase = function(){
+   x = this.frase.split(" ");
+   for (var i=0; i<x.length; i++)
+        emit(x[i], 1);
+};
+var reduceFunctionFrase = function(palabra,cuantas){
+     return Array.sum(cuantas);};
+ 
+db.frases.mapReduce(mapFunctionFrase,
+                       reduceFunctionFrase,
+                       {out: "palabras"}
+                      )
+``` 
+---
+### Ejemplo 3
+
+A partir de la siguiente colección: 
+
+```javascript
+use running
+db.sesiones.insert({nombre:"Bertoldo", mes:"Marzo", distKm:6, tiempoMin:42})
+db.sesiones.insert({nombre:"Herminia", mes:"Marzo", distKm:10, tiempoMin:60})
+db.sesiones.insert({nombre:"Bertoldo", mes:"Marzo", distKm:2, tiempoMin:12})
+db.sesiones.insert({nombre:"Herminia", mes:"Marzo", distKm:10, tiempoMin:61})
+db.sesiones.insert({nombre:"Bertoldo", mes:"Abril", distKm:5, tiempoMin:33})
+db.sesiones.insert({nombre:"Herminia", mes:"Abril", distKm:42, tiempoMin:285})
+db.sesiones.insert({nombre:"Aniceto", mes:"Abril", distKm:5, tiempoMin:33})
+```
+
+Queremos saber cuántos kilómetros a recorrido cada persona al mes usando _MapReduce_:
+???
+```javascript
+var mapKmPersonaMes = function(){
+        emit({nombre:this.nombre, mes:this.mes}, this.distKm);
+};
+var reduceKmPersonaMes = function(dato,cuantos){
+     return Array.sum(cuantos);
+};
+ 
+db.sesiones.mapReduce(mapKmPersonaMes,
+                       reduceKmPersonaMes,
+                       {out: "kmMes"}
+                      )
+```                      
