@@ -71,11 +71,15 @@ name:Compuestos
 
 Mantienen bajo el número de índices de una colección. Se deben utilizar siempre que sean posible
 Tipos de índices compuestos: 
-índices multiclave: { titulo:”One Post”, autor:{nombre:”John”, email:”john@email.com”}}
+
+- índices multiclave: 
+  ```json
+  { titulo:”One Post”, autor:{nombre:”John”, email:”john@email.com”}}
+  ```
 
         db.posts.createIndex(“autor”:1)
 
-índices compuestos definidos por el usuario
+- índices compuestos definidos por el usuario
 
         db.posts.createIndex(“nombre”:1,”email”:1)
 
