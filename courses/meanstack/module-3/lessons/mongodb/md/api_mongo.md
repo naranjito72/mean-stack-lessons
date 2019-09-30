@@ -14,6 +14,8 @@ task: &nbsp;
 ### Instalación
 
 Una vez creado el archivo `package.json`, con el comando `npm init`, el driver de MongoDB se instala con: 
+.inverse[<pre class=codigo> npm install mongodb --save
+</pre>
 
 
 ---
