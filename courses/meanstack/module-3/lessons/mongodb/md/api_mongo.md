@@ -11,48 +11,203 @@ task: &nbsp;
 
 ---
 
-### Instalación
+### Instalación y Conexión
 
 Una vez creado el archivo `package.json`, con el comando `npm init`, el driver de MongoDB se instala con: 
 .inverse[<pre class=codigo> npm install mongodb --save
 </pre>
+]
 
+Para trabajar con MongoDB desde Node.js se tiene que importar la clase MongoClient del package:
+
+```javascript
+  import {MongoClient} from 'mongodb';
+```
+
+Una vez importado se invoca el método `connect()` de una instancia de la clase MongoClient, pasándole la url de la bd como argumento:
+
+```javascript
+  const url = 'mongodb://localhost:27017';
+  const db = 'myproject';
+
+  const client = new MongoClient(url);
+//pasamos un callback para gestionar la conexión
+  client.connect(err=>{
+    console.log("Connected successfully to server");
+
+    const db = client.db(dbName);
+
+    client.close();
+  })
+```
 
 ---
-### Tipos de índices
 
-- [Campo Único](#single-field) (https://docs.mongodb.com/manual/core/index-single/)
-- [Compuestos](https://docs.mongodb.com/manual/core/index-compound/)
-- [Multiclave](https://docs.mongodb.com/manual/core/index-multikey/)
-- [Texto](https://docs.mongodb.com/manual/core/index-text/)
-- [Comodín](https://docs.mongodb.com/manual/core/index-wildcard/)
-- [2dspheres](https://docs.mongodb.com/manual/core/2dsphere/)
-- [2d](https://docs.mongodb.com/manual/core/2d/)
-- [geoHaystack](https://docs.mongodb.com/manual/core/geohaystack/)
-- [Hashed](https://docs.mongodb.com/manual/core/index-hashed/)
-  
+### Conexión con ES7
+
+Si al método de conexión no se le pasa un _callback_, éste devuelve una promesa:
+
+```javascript
+import {MongoClient}  from 'mongodb';
+
+async () => {
+  // Connection URL
+  const url = 'mongodb://localhost:27017/myproject';
+  // Database Name
+  const dbName = 'myproject';
+  const client = new MongoClient(url, { useNewUrlParser: true });
+
+  try {
+    // Use connect method to connect to the Server
+    await client.connect();
+
+    const db = client.db(dbName);
+  } catch (err) {
+    console.log(err.stack);
+  }
+
+  client.close();
+})();
+
+```
 ---
-name: single-field
-task: [<< índice de contenidos >>](#contenido)
 
-### Índice campo único
+### Operaciones CRUD: Insert
 
-Función __`createIndex(clave:orden)`__:
+Usamos los métodos `insertOne()` o `insertMany()`:
 
-  - clave: que se usará para crear el índice
-  - orden: dirección de ordenación del índice: 1 ascendente y -1 descendente
+```javascript
+    ...
+    // Insert a single document
+    let r = await db.collection('inserts').insertOne({a:1});
+    assert.equal(1, r.insertedCount);
 
-Por defecto, MongoDB crea el índice sobre el campo _id.
+    // Insert multiple documents
+    r = await db.collection('inserts').insertMany([{a:2}, {a:3}]);
+    assert.equal(2, r.insertedCount);
+  } catch (err) {
+    console.log(err.stack);
+  }
+  ...
+```
+---
 
-El índice se creará para todos los valores de la clave indicada para todos los documentos de la colección:
+### Operaciones CRUD: Update
 
-    db.posts.createIndex(“Etiquetas”:1)
+Usamos los métodos `updateOne()` o `updateMany()`:
 
-Para indexar un campo de un documento embebido:
+```javascript
+    ...
+    const col = db.collection('updates');
+    let r;
 
-    db.posts.createIndex(“comentarios.contador”:1)
+    // Insert multiple documents
+    r = await col.insertMany([{a:1}, {a:2}, {a:2}]);
+    // Update a single document
+    r = await col.updateOne({a:1}, {$set: {b: 1}});
+    // Update multiple documents
+    r = await col.updateMany({a:2}, {$set: {b: 1}});
+    // Upsert a single document
+    r = await col.updateOne({a:3}, {$set: {b: 1}}, {upsert: true});
 
-Si se indexa un array, se incluyen todos los elementos del array en el índice, pero no se puede indicar el orden dentro del array.
+} catch (err) {
+    console.log(err.stack);
+  }
+  ...
+```
+---
 
-Para consultar los índices:__` db.collection.getIndexes()`__
+### Operaciones CRUD: Delete
 
+Usamos los métodos `deleteOne()` o `deleteMany()`:
+
+```javascript
+    ...
+    let r;
+
+    // Insert multiple documents
+    r = await col.insertMany([{a:1}, {a:2}, {a:2}]);
+    // Remove a single document
+    r = await col.deleteOne({a:1});
+    assert.equal(1, r.deletedCount);
+
+    // Remove multiple documents
+    r = await col.deleteMany({a:2});
+
+  } catch (err) {
+    console.log(err.stack);
+  }
+
+  ...
+```
+---
+### Operaciones CRUD: Métodos especiales
+
+`findOneAndUpdate`, `findOneAndDelete` and `findOneAndReplace` permiten modificar o reemplazar un documento y devolverlo. Requiere el bloqueo del documento hasta que se devuelve.
+
+```javascript
+    ...
+    // Get the findAndModify collection
+    const col = db.collection('findAndModify');
+    let r;
+
+    // Insert multiple documents
+    r = await col.insert([{a:1}, {a:2}, {a:2}]);
+    
+    // Modify and return the modified document
+    r = await col.findOneAndUpdate({a:1}, {$set: {b: 1}}, {
+      returnOriginal: false,
+      sort: [['a',1]],
+      upsert: true
+    });
+
+  } catch (err) {
+    console.log(err.stack);
+  }
+    ...
+```
+---
+### Operaciones CRUD: Read
+
+Los principales métodos son `find()` y `aggregate()` que devuelven un cursor.
+
+Ejemplo devuelve los dos primeros documentos de una colección en un Array();
+
+```javascript
+    ...
+    // Get the collection
+    const col = db.collection('find');
+
+    // Insert multiple documents
+    const r = await col.insertMany([{a:1}, {a:1}, {a:1}]);
+    
+    // Get first two documents that match the query
+    const docs = await col.find({a:1}).limit(2).toArray();
+  } catch (err) {
+    console.log(err.stack);
+  }
+
+  ...
+```
+También podemos iterar sobre el cursor con el método next(), de manera más limpia:
+
+```javascript
+...
+    // Get the cursor
+    const cursor = col.find({a:1}).limit(2);
+
+    // Iterate over the cursor
+    while(await cursor.hasNext()) {
+      const doc = await cursor.next();
+      console.dir(doc);
+    }
+...
+```
+### Más información
+
+[Referencias ECMAScript Next](https://mongodb.github.io/node-mongodb-native/3.3/reference/main/)
+
+---
+### Ejercicio: Crunchbase
+
+Realizar un menú desde el terminal para obtener información de la bd _crunchbase_.
