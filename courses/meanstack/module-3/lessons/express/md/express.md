@@ -292,6 +292,9 @@ Crear un controlador `admin.js` para el ejercicio anterior, añadiéndole un _mi
 
 ---
 
+name:rutasproyecto
+task: [<< índice de contenidos >>](#contenido)
+
 ### PROYECTO
 
 - Crea las rutas, middlewares y controllers para la aplicación que presentarás como proyecto.
@@ -306,32 +309,32 @@ Crear un controlador `admin.js` para el ejercicio anterior, añadiéndole un _mi
     - __models__: modelos y esquemas de mongoose, 
     - __controllers__: acciones y operaciones sobre la bd
     - __routes__: directorio de rutas, se definen las rutas a las que responderá la aplicación.
+---
 
+name:estaticos
+task: [<< índice de contenidos >>](#contenido)
 
+### Ficheros estáticos: Imágenes
 
-???
-### Static Files
+Las imágenes, CSS o JavaScript del lado de cliente se envían directamente desde el servidor al navegador
 
-Static files are things like images, CSS, and client-side JavaScript that are sent directly from the server to the browser as is.
+Express soporta de forma navitva el envío de estos ficheros.
 
-Express has built in support for serving these kinds of files.
+Normalmente se almacenan en una carpeta `public`:
 
-Typically, these files are saved in a folder called `public`:
-
+Ej:
 ```
 $ mkdir public
 ```
+Creamos un directorio para imágenes y descargamos la imagen de gato a este directorio
 
-Let's create a folder for images, and download a cool cat picture to that folder:
-
-```
+```shell
 $ cd public
 $ mkdir images
 $ cd images
 $ curl -o cool-cat.jpg http://wallpapercave.com/wp/X7VjxFk.jpg
 ```
-
-Inside of Express, we have to tell our server to serve static files from the `public` directory:
+Desde Express, se indica al servidor el directorio de ficheros estáticos `public`:
 
 ```javascript
 // ...
@@ -343,19 +346,21 @@ app.get('/', (request, response, next) => {
 // ...
 ```
 
-Visit [localhost:3000/images/cool-cat.jpg](http://localhost:3000/images/cool-cat.jpg) and you will see your image!
+Desde [localhost:3000/images/cool-cat.jpg](http://localhost:3000/images/cool-cat.jpg)  se puede ver la imagen
 
-We aren't going to have a web app full of static files, where people have to visit a million different pages to see different pictures.
+El contenido estático se puede incorporar dentro de plantillas HTML.
+---
 
-One of the benefits of using static assets is that we can incorporate them into our HTML for the browser to read.
+name:estaticos
+task: [<< índice de contenidos >>](#contenido)
 
-**Create a stylesheet:**
+### Ficheros estáticos: Estilos
 
 ```
 $ mkdir public/stylesheets
 $ touch public/stylesheets/style.css
 ```
-**Add the following styles:**
+
 
 ```css
 body {
@@ -364,7 +369,8 @@ body {
 }
 ```
 
-**Create a new route:**
+Creamos una nueva ruta: 
+
 ```javascript
 // ...
 
@@ -385,19 +391,6 @@ app.get('/hello', (request, response, next) => {
 // ...
 ```
 
-Now visit [localhost:3000/hello](http://localhost:3000/hello)!
+Visitamos [localhost:3000/hello](http://localhost:3000/hello)!
 
-:::danger
-:warning: Remember to restart your server in your terminal before checking the changes.
-```
-$ ctrl + c
-$ node app.js
-```
-:::
-
-
-
-### Statics Assets Request-Response Flow
-
-![](https://s3-eu-west-1.amazonaws.com/ih-materials/uploads/upload_e9728aae585f81940c61289c0125f9f2.png)
-
+---
