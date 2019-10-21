@@ -1,159 +1,316 @@
-# Express
+class: center, middle
 
-### Web Frameworks
-
-**Why would I use a *framework*?**
-
-[Web Frameworks](https://en.wikipedia.org/wiki/Web_framework) or web application framework (WAF) is a software framework that is designed to support the development of web applications including web services, web resources and web APIs. Web frameworks aim to alleviate the overhead associated with common activities performed in web development.
-
-For example, many web frameworks provide:
-- Libraries for database access
-- Templating frameworks
-- Session management
-- Often promote code reuse
-
-Though they often target development of dynamic websites they are also applicable to static websites.
-
-We can build a full-blown web application using just Node.js, Ruby, Python or any other backend language. Over time though, people have developed *frameworks* on top of these different languauges for a few reasons:
-
-- We do many of the aforementioned tasks for *every* web application, and it's tedious to set up.
-- We need a way to structure our code, all of our complex logic can build up over time, leaving us with a mess.
-- We benefit from other people's hard work. If you're using your own framework, then every bug is yours to fix. With a community surrounding the framework, we get some help in this regard.
-
-## Express Web Framework
-
-![](https://i.imgur.com/T9ARM9m.png)
+<img src="https://imgur.com/Np6FvqO.png" width=50% height=50% alt="logo">
 
 
-[ExpressJS](http://expressjs.com/) is the most commonly used framework in the Node.js ecosystem. Every Node.js player has heard of it and is using it with or without noticing.
+---
 
-It’s currently on its 4th generation, and there are quite a few [Node.js frameworks](http://expressjs.com/en/resources/frameworks.html) built based upon it or inspired by its concepts.
+name: contenido
+class: center, middle, inverse
+## [Express.js](#Qué es Express.js?)
+---
+name: default
+layout: true
+task: &nbsp;
 
-Express.js, or simply Express, is a web application framework for Node.js, released as free and open-source software under the MIT License.
+.task[{{task}}]
 
-It is designed for building web applications and APIs. It is the de facto standard server framework for Node.js. The original author described it as a relatively minimal with many features available as plugins.
+---
+name:contenido
 
-Express is the backend part of the MEAN stack, together with MongoDB database and AngularJS frontend framework.
+###Contenido
 
-Ready to Start?
+- [API REST](/courses/meanstack/module-3/lessons/nodejs/node.html#163)
+- [MVC](#mvc)
+- [Estructura de un proyecto con Express.js](#proyecto)
+- [Routing](#rutas)
+- [Motores de Plantillas](#engines)
+- [mongoose](#mongoose)
+- [Middlewares de autenticación](#authentication)
+- [Pase a Producción](#produccion)
 
-### Express Hello World
+---
+name:mvc
+task: [<< índice de contenidos >>](#contenido)
 
-[ExpressJS](http://expressjs.com/) is a web framework built on Node.js that has functions that closely resemble the request-response process.
+### Arquitectura MVC
 
-Let's get set up with our first Express app.
+La arquitectura MVC separa los datos (__`modelo`__), las vistas (__`view`__) y la lógica de la aplicación (__`controlador`__). Esta separación entre componentes permite eliminar acoplamientos entre componentes, teóricamente hace el código más mantenible y reusable. Una ventaja más supone el hecho de que es posible diseñar prototipos rápidamente y concentrarse en cada uno de los aspectos del desarrollo en cada momento
 
-**1 |** Create a folder called `express-hello-world`.
+<img src='https://imgur.com/IUnyivw.png' width=100% height=100%>
 
-```shell
-$ mkdir express-hello-world
-$ cd express-hello-world
-```
+---
+name:proyecto
+task: [<< índice de contenidos >>](#contenido)
 
-**2 |** Install **Express** with NPM and save it as a dependency in our project, then create a file to run our *server* named `app.js`
+### ESTRUCTURA DE UN PROYECTO CON EXPRESS.JS
 
-```shell
-$ npm init
-(Hit return until prompted to type "yes")
+\- __`/models`__ contiene todos los modelos del ORM (Schemas en mongoose)
 
-$ npm install express --save
-$ touch app.js
-```
+\- __`/views`__ contiene las vistas-templates (usando cualquier motor de plantillas de express
 
-**3 |** Write our `app.js` server
+\- __`/public`__ contiene todo el contenido estático (imágenes, hojas de estilo, JavaScript del lado del cliente)
+  -   __`/assets/images`__ archivos de imágenes
+  -   __`/assets/pdf`__ archivos pdfs estáticos
+  -   __`/css`__ hojas de estilos (o compilados por un motor de css)
+  -   __`/js`__ JavaScript del lado cliente
+  
+\- __`/controllers`__ contiene las rutas de express, separadas por `modulo/area` de la aplicación (si se \- utiliza la funcionalidad de generación de estructuras de express, esta carpeta se llama __`/routes`__) 
+---
+name:proyecto
+task: [<< índice de contenidos >>](#contenido)
 
-We have to first require Express so we can use it in our app.
+### ESTRUCTURA DE UN PROYECTO CON EXPRESS.JS
 
-The [Express()](https://expressjs.com/en/4x/api.html#express) constructor instantiates an [express application](https://expressjs.com/en/4x/api.html#app).
+- El código de la API debería permanecer separado del resto de la aplicación para evitar confusiones. 
 
-```javascript=
-const express = require('express');
+- Debe ser la primera parte que se desarrolle de nuestra aplicación
 
-// We create our own server named app
-// Express server handling requests and responses
-const app = express();
-```
+- Lo primero es crear un área separada para la API, nombrando un directorio como __`app_api`__. Se situará al mismo nivel del directorio __`app_server`__, que contendrá el resto del código de la aplicación. 
 
-**4 |** Set up a Route
+- Dentro de `app_api` situaremos los directorios __`model`__, __`controllers`__ y __`routes`__.
+  
+---
+name:rutas
+task: [<< índice de contenidos >>](#contenido)
 
-Web Apps have many different pages, and we need to tell our server what to do when it receives a request. Normally a server identify requests with two parameters:
+### Express: Routing 
 
-- **URLs**
-  What goes after the http://domain.com/****
-
-  - `/profile` for example.com/profile
-  - `/blogs`  for example.com/blogs
-  - `/` for example.com
-
-- **HTTP Method**: `get`
-
-```javascript=
-const express = require('express');
-const app = express();
-
-// our first Route
-app.get('/', (request, response, next) => {
-  console.log(request);
-  response.send('<p>Welcome Ironhacker. :)</p>');
-});
-```
-
-Notice, each route will accept a *callback*. This is the function that will be called when someone makes a request to `/`.
-
-- **app**: Our express server
-- **`get`**: the **HTTP Verb** needed to access this page
-- **`/`**: the route that the User will type into the URL bar
-- `request`: An *object* containing information about the request, such as the headers. More on this later
-- `response`: An *object* containing information about the response, such as headers and any data we need to send to the client
-
-The two parameters of the `request` and the `response` will always be passed to the callback function for any route.
+- Forma de responder una aplicación a una solicitud de un cliente en un _endpoint_ determinado, formado por un URI (o path) y un método de solicitud HTTP específico (GET, POST, etc.).
+  
+- Cada ruta puede tener una o varias funciones que gestionen la petición, siendo excluyentes entre si.
 
 
-**5 |** Start the Server!
+      app.METHOD(PATH, HANDLER) 
 
-Tell our server to *continuously listen for requests* on port 3000:
+Donde:
+- __app__ es una instancia de express.
+- __METHOD__ es un método de solicitud HTTP.
+- __PATH__ es una vía de acceso en el servidor.
+- __HANDLER__ es la función que se ejecuta cuando se correlaciona la ruta.
 
-```javascript
-// Server Started
-app.listen(3000, () => {
-  console.log('My first app listening on port 3000!')
-});
-```
 
-**Final Product**
+---
+name:rutas
+task: [<< índice de contenidos >>](#contenido)
 
-```javascript=
-// Require Express
-const express = require('express');
+### Express: Routing 
 
-// Express server handling requests and responses
-const app = express();
+Ejemplo:
 
-// our first Route:
-app.get('/', (request, response, next) => {
-  response.send('<p>Welcome Ironhacker. :)</p>');
-  next();
-});
+    // GET method route
+    app.get('/', (req, res) => {
+      res.send('GET request to the homepage');
+    });
 
-// Server Started
-app.listen(3000, () => {
-  console.log('My first app listening on port 3000!');
-});
-```
+    // POST method route
+    app.post('/', (req, res) => {
+      res.send('POST request to the homepage');
+    });
 
-To view your first web app, we must run the server with node. Remember that because we executed `app.listen()`, the program will run until we stop it manually.
+    //POST method route
+    app.post('/user', (req, res) => {
+      res.send('POST request to the homepage');
+    });
 
-```
-$ node app.js
-```
+---
+name:rutas
+task: [<< índice de contenidos >>](#contenido)
 
-And visit [localhost:3000](http://localhost:3000)!
+### Express: Métodos de Routing 
 
-:::info
-:bulb: To stop the server, type `CONTROL`+`C` in the terminal
-:::
+- En Express se da soporte al direccionamiento de los siguientes métodos:
 
-## Static Files
+  - `get`, `post`, `put`, `head`, `delete`, `options`, `trace`, `copy`, `lock`, `mkcol`, `move`, `purge`, `propfind`, `proppatch`, `unlock`, `report`, `mkactivity`, `checkout`, `merge`, `m-search`, `notify`, `subscribe`, `unsubscribe`, `patch`, `search` y `connect`.
+  
+- Existe un direccionamiento especial: `app.all` para cargar funciones de middleware accesibles a todos los métodos de solicitud. Ej:
+
+
+    app.all('/secret', (req, res, next) => {
+      console.log('Accessing the secret section ...');
+      next(); // pass control to the next handler
+    });
+
+---
+name:rutas
+task: [<< índice de contenidos >>](#contenido)
+
+### Express: Paths de Routing
+
+- Los paths pueden ser strings, patrones de caracteres o expresiones regulares.
+  
+- Los caracteres:?, +, *, y () son parte de expresiones regulares. El guión o (-) y el punto (.) se interpretan literalmente.
+
+- Ej.:
+
+
+    app.get('/', (req, res)=> { res.send('root') }) 
+    // This route path will match requests to /about.
+    app.get('/about', (req, res)=> { res.send('about') }) 
+    // This route path will match requests to /random.text.
+    app.get('/random.text', (req, res)=> { res.send('random.text') }) 
+    Here are some examples of route paths based on string patterns.
+    // This route path will match acd and abcd.
+    app.get('/ab?cd', (req, res)=> { res.send('ab?cd') }) 
+    // This route path will match abcd, abbcd, abbbcd, and so on.
+    app.get('/ab+cd', (req, res)=> { res.send('ab+cd') }) 
+    // This route path will match abcd, abxcd, abRANDOMcd, ab123cd, and so on.
+    app.get('/ab*cd', (req, res)=> { res.send('ab*cd') }) 
+    // This route path will match /abe and /abcde.
+    app.get('/ab(cd)?e', (req, res)=> { res.send('ab(cd)?e') }) 
+    Examples of route paths based on regular expressions:
+    // This route path will match anything with an “a” in it.
+    app.get(/a/, (req, res)=> { res.send('/a/') }) 
+    // This route path will match butterfly and dragonfly, but not butterflyman, dragonflyman, and so on.
+    app.get(/.*fly$/, (req, res)=> { res.send('/.*fly$/') })
+
+---
+name:rutas
+task: [<< índice de contenidos >>](#contenido)
+
+### Express: Parámetros de Routing
+
+- Los parámetros de la dirección son segmentos de una URL utilizados para capturar valores en una posición de la URL. 
+  
+- A los valores capturados se accede mediante req.params object, con el nombre del parámetro especificado en la dirección
+  
+- Ej.:
+
+
+      Route path: /users/:userId/books/:bookId
+      Request URL: http://localhost:3000/users/34/books/8989
+      req.params: { "userId": "34", "bookId": "8989" }
+
+      app.get('/users/:userId/books/:bookId', 
+              (req, res) => res.send(req.params));
+
+---
+### Ejercicio 19
+<hr>
+
+- Crear un _middleware_ con __Express__ que asocie un método `auth` a una URI `/admin` y a las subrutas. De manera que si no se obtiene un usuario y una password determinados en el request de la petición devolver: 
+  
+  `status_code = Not authorized`.
+  
+- Si se autoriza devolver en `/admin` mensaje `"Estás validado como admin"`
+
+- Si entra a `/admin/user` devolver los datos de usuario y password
+  
+_TIP: El usr y pssw enviarlos como key|value desde POSTMAN._
+
+---
+name:rutas
+task: [<< índice de contenidos >>](#contenido)
+
+### Express: Routing handlers
+
+- Conjunto de _callbacks_ que se comportan como un único _middleware_ para manejar la respuesta a una petición. Requieren que cada una de las funciones _callback_ implemente el método `next()`.
+
+- Ejemplo:
+
+
+    app.get('/example/b', (req, res, next) => {
+      console.log('the response will be sent by the next function ...')
+      next()
+    }, (req, res) => res.send('Hello from B!'))
+
+---
+
+name:rutas
+task: [<< índice de contenidos >>](#contenido)
+
+### Express: Routing   `app.route()`
+
+- Permite encadenar _handlers_ de ruta. Facilita la lectura del código, reduce la redundancia y errores
+
+- Ej.
+
+
+    app.route('/book')
+      .get  ((req, res)=> res.send('Get a random book'));
+      .post ((req, res)=> res.send('Add a book'));
+      .put  ((req, res)=> res.send('Update the book'));
+
+---
+
+name:rutas
+task: [<< índice de contenidos >>](#contenido)
+
+### Express: `express.Router`
+
+- Permite crear _handlers_ modulares. Una instancia de `Router` es un sistema _middleware_ y direccionamiento completo. Funciona como  una __miniaplicación__.
+  
+- Ej. para manejar la ruta `/birds` y las subrutas se crea un __módulo bird.js__. Después se carga en la aplicación:
+
+
+    //módulo bird.mjs
+
+    import Router from 'express';
+    const router = Router();
+    // middleware that is specific to this router 
+    router.use((req, res, next) => {
+        console.log('Time: ', Date.now());
+        next();
+    }); 
+    // define the home page route 
+    router.get('/', (req, res) => res.send('Birds home page'));
+    // define the about route 
+    router.get('/about', (req, res) => res.send('About birds'));
+    export default router; 
+
+      //app.mjs
+
+      import birds from ('./birds.mjs'); 
+      ... 
+      app.use('/birds', birds); 
+
+---
+
+name:rutas
+task: [<< índice de contenidos >>](#contenido)
+
+### Express Routing: Métodos de respuesta
+<br>
+
+|Método|	Descripción|
+|---|---
+|res.download()|	Solicita un archivo para descargarlo.
+|res.end()|	Finaliza el proceso de respuesta.
+|res.json()|	Envía una respuesta JSON.
+|res.jsonp()|	Envía una respuesta JSON con soporte JSONP.
+|res.redirect()|	Redirecciona una solicitud.
+|res.render()|	Representa una plantilla de vista.
+|res.send()|	Envía una respuesta de varios tipos.
+|res.sendFile|	Envía un archivo como una secuencia de octetos.
+|res.sendStatus()|	Establece el código de estado de la respuesta y envía su representación de serie como el cuerpo de respuesta
+
+---
+
+### Ejercicio 20
+
+Crear un controlador `admin.js` para el ejercicio anterior, añadiéndole un _middleware_ que imprima un timestamp en la respuesta.
+
+---
+
+### PROYECTO
+
+- Crea las rutas, middlewares y controllers para la aplicación que presentarás como proyecto.
+
+- Tienes que analizar que peticiones se harán desde el __frontend__ a las APIs teniendo en cuenta las funcionalidades discutidas en la estructuración de las aplicaciones.
+
+- Comenzar a estructurar los proyectos:
+
+    - __index.js__: conexión a la base de datos y configuración general de mongoose, 
+    - __app.js__ servidor web con NodeJS y configuración de express, 
+    - __middlewares__ (middleware de autenticación,...)
+    - __models__: modelos y esquemas de mongoose, 
+    - __controllers__: acciones y operaciones sobre la bd
+    - __routes__: directorio de rutas, se definen las rutas a las que responderá la aplicación.
+
+
+
+???
+### Static Files
 
 Static files are things like images, CSS, and client-side JavaScript that are sent directly from the server to the browser as is.
 
@@ -243,282 +400,4 @@ $ node app.js
 ### Statics Assets Request-Response Flow
 
 ![](https://s3-eu-west-1.amazonaws.com/ih-materials/uploads/upload_e9728aae585f81940c61289c0125f9f2.png)
-
-
-## Summary
-
-In this lesson we discussed why and how we would use a web application, and how to build a *super* basic web app with Express. We also discussed the building blocks of the internet, HTTP.
-
-HTTP and web concepts are almost a language on their own. We're going to continue to reinforce and use the terms `request`, `response`, and many more going forward.
-
-## Extra Resources
-
-- [Express Getting Started](https://expressjs.com/en/starter/installing.html)
-- [Express Hello World](https://expressjs.com/en/starter/hello-world.html)
-- [What is HTTP(video)](https://www.youtube.com/watch?v=eesqK59rhGA)
-- [HTTP Made Really Easy](https://www.jmarshall.com/easy/http/)
-- [A Beginner’s Guide to HTTP and REST](https://code.tutsplus.com/tutorials/a-beginners-guide-to-http-and-rest--net-16340)
-
-![Ironhack Logo](https://i.imgur.com/1QgrNNw.png)
-
-# Express | Middleware: Nodemon, Morgan, and Node debug
-
-## Learning Goals
-
-After this lesson you will be able to:
-
-- Understand and use the middleware pattern in Node
-- Keep your server running and restart the server if you make changes
-- Log information with Morgan
-- Debug more efficiently with Node Debug
-
-## Introduction
-
-Before this point, we've been referencing the mysterious `app.use()` function. The function is aptly named, and we can assume we're telling our application to use a specific package, but let's take a deeper look into how this process works.
-
-## Middleware
-
-When a request is made to our Express server, it doesn't actually go straight to the route. Often times, our route is actually the last stop.
-
-We've used a couple of packages thusfar, including bodyParser. These packages are called *Middleware*.
-
->The term middleware is used to describe separate products that serve as the glue between two applications.
->
->Middleware is sometimes called plumbing because it connects two sides of an application and passes data between them.
-
-In this case, the two sides of the application consist of (1) the client making a request, and (2) the server handling that request.
-
-The following diagram illustrates how our application actually handles a request.
-
-![Express App Requests](https://i.imgur.com/AO6lw3m.png)
-
-1. The request passes through `cookieParser`
-2. The request passes through `bodyParser`
-3. The request passes through `logger`
-4. The request passes through `authentication`
-5. Finally, our request actually hits our route, and callback for it
-
-How does this work? Let's create a simple example to illustrate this.
-
-First, let's create a test route:
-
-```javascript
-app.get('/test', (req, res) => {
-  res.send("We made it to test!");
-});
-```
-
-Then, let's create a middleware of our own:
-
-```javascript
-// ...
-app.use(myFakeMiddleware)
-// ...
-function myFakeMiddleware(){
-  console.log("myFakeMiddleware was called!");
-}
-```
-
-Make a request to `localhost:3000/test`:
-
-![](https://i.imgur.com/Lnqfi8P.png)
-
-But our browser doesn't load anything! Why?
-
-### Middleware Pattern
-
-`app.use()` is a function that adds a middleware to our stack. All of the middlewares are called, one after the other, finally ending with your route.
-
-The problem is that we're not calling our next middleware. The chain is broken, and there is a clog in the pipe.
-
-Functions that work as middlewares receive 2-4 arguments and one of them is always the *next* middleware to call.
-
-Let's add that to our function:
-
-```javascript
-function myFakeMiddleware(_, _, next){
-  console.log("myFakeMiddleware was called!");
-  next();
-}
-```
-
-:::info
-:bulb: We'll discuss the first two arguments shortly!
-:::
-
-We pass `next` as our third argument, then whenever our middleware is done logging, we call it.
-
-Visit `localhost:3000/test`.
-
-#### Passing Information
-
-Unless we're simply logging the request, often times we will need to pass information through our middleware.
-
-Express suggests attaching any of your data to the `request` object. This will then be available in every middleware, and in your route. Let's take a look at this example of a fake middleware:
-
-```javascript
-function myFakeMiddleware(req, _, next){
-  console.log("myFakeMiddleware was called!");
-  req.secretValue = "swordfish";
-  next();
-}
-```
-
-After our `myFakeMiddleware` middleware is called, we can easily access the *modified request* object. In this example, we can access `secretValue`:
-
-```javascript
-app.get('/test', (req, res) => {
-  let mySecret = req.secretValue;
-  res.send(mySecret);
-});
-```
-
-Often times we won't be designing a middleware of our own, Express already has a [huge ecosystem of middlewares](https://expressjs.com/en/resources/middleware.html), but it is quite helpful to understand how the request is processed.
-
-Let's talk about some extremely useful Node packages (some of which are middlewares) that will help you when developing apps.
-
-## Nodemon
-
-I'm sure you've noticed that every time we make a change in our Express application, we have to kill the server and start it again. Maybe you've forgotten to restart after making a change and don't know why your code isn't working. Quite a pain.
-
-![nodemon logo](http://i.imgur.com/QHkm6Ct.png =350x)
-
-[*Nodemon*](https://github.com/remy/nodemon) is a Node.js app reloader. In short, it will watch for any file change, and then restart your application when something is different. It is a [CLI](https://en.wikipedia.org/wiki/Command-line_interface) application that can be installed through npm:
-
-```
-$ npm install -g nodemon
-```
-
-Nodemon is meant to be a drop in replacement for the `node` command. We can fire up our Express server with reloading by running the following:
-
-```
-$ nodemon app.js
-```
-
-And that's it! We can stop our server as we normally would with `ctrl-c`. There are plenty of advanced options that we shouldn't worry about currently [in the docs](https://github.com/remy/nodemon).
-
-## Morgan
-
-Imagine this scenario.
-
-After you graduate Ironhack, you go and get yourself a fancy new developer job. You're the only developer on a new startup creating the Tinder for people who like JavaScript, and you get a call at 3AM in the morning from the CEO: "Ironhacker, the server is down! Everything is broken!" What do you do?
-
-In the current state of our application, you would be doing a lot of guessing. Possibly trying to visit every route to see which one is broken, guessing what the problem is, and generally having a bad time.
-
-Enter *Logging*
-
-![wrong logging ](https://i.imgur.com/kNQscIy.jpg)
-
-No, not *that* kind of logging, like this:
-
-![A log file screenshot](https://i.imgur.com/CsAkpjg.png)
-
-
-> Logging is the process of recording application actions and state to a secondary interface.
-
-The logger may log information about the request, such as:
-
-- The HTTP method
-- URL that was requested
-- The time and date a request occurred
-- The request headers
-- The origin of the request
-
-This makes it way easier to find out why your server is on fire, and makes it much easier to troubleshoot in development.
-
-Enter [Morgan](https://github.com/expressjs/morgan). Morgan is a flexible, configurable, npm middleware that handles logging for us. First, let's install Morgan:
-
-```
-$ npm install --save morgan
-```
-
-And then require it in our express app:
-
-```javascript
-/* other require statements */
-const morgan     = require('morgan');
-```
-
-Finally, we have to add Morgan to our middleware stack:
-
-```javascript
-/* other code */
-app.use(
-  morgan(`Request Method: :method, Request URL: :url, Response Time: :response-time(ms)`));
-```
-What is this sorcery? In short, we can pass symbols representing specific parts of the request into our Morgan function, it will read these, and then log that information when a request is made.
-
-Right now, we're logging `:method`, `:url`, and `:response-time`.
-
-Make a request to your home page, and then look in your terminal:
-
-```
-Request Method: GET, Request URL: /, Response Time: 560.786(ms)
-```
-
-This format makes Morgan super easy to configure. You can make the logs as large or as small as you need to, but Morgan has a few pre-built suggestions for you.
-
-Let's change the middleware to Morgan's `dev` log level:
-
-```
-app.use(morgan('dev'));
-```
-
-Make another request to your home page:
-
-```
-  GET / 304 99.993 ms - -
-```
-
-The `dev` level logs the `:method`, `:url`, `:status`, `:response-time`, and `content-length`.
-
-You can find all of the different logging *tokens* [in Morgan's documentation](https://github.com/expressjs/morgan#tokens).
-
-## Node Inspector
-
-Version 6.5+ of Node.js comes with a cool new experimental feature to debug your JavaScript code.
-
-[Remember all of those cool debugging features](https://hackmd.io/OwVgjADJAsBmC0BmAnNM9ogIYngDhAGMA2eMAJgFMATEw884wiIA) that Chrome has? Node has taken advantage of these, and created a connection between your Node app and the Chrome developer tools.
-
-To open these developer tools, we run our application with the `--inspect` flag.
-
-```
-$ nodemon --inspect app.js
-
-Warning: This is an experimental feature and could change at any time.
-To start debugging, open the following URL in Chrome:
-    chrome-devtools://devtools/remote/serve_file/@62cd277117e6f8ec53e31b1be58290a6f7ab42ef/inspector.html?experiments=true&v8only=true&ws=localhost:9229/node
-```
-
-As discussed in the earlier lesson, we can add breakpoints and watchers.
-
-Breakpoints will only be run when our code is run. In web development, this can be super handy for tracking a request, or catching a bug in our middleware.
-
-In addition to this, if things get *really* tricky, we can browse our sources tab, and add a breakpoint to our included `node_modules` code.
-
-Add a breakpoint to the `render` on your home page:
-
-![](https://i.imgur.com/umtcbA4.png)
-
-Now we can look at our request object, and see all of the information it has accumulated on its journey through the middleware:
-
-![](https://i.imgur.com/jvNGcJ7.png)
-
-If you need a refresher on the dev tools and debugging, feel free to revisit the previous lesson. The dev tools function almost exactly in the way that you think they would with Node.
-
-## Summary
-
-In this lesson we talked a bit about the middleware pattern. This is important to cover so you can understand what we're doing when we call `app.use()` and what all of these mystery packages are doing.
-
-In addition we covered some important middleware packages such as Morgan, Nodemon, and the `--inspect` flag for Node.
-
-Logging is *absolutely vital* to your application, and restarting your Node app every time you make a change is pretty frustrating, so these are going to become a very common part of your Node setup.
-
-Debugging through the terminal and a series of `console.log` becomes very tedious as well, so try to use the `--inspect` flag as much as you can.
-
-There are dozens of different middlewares for Node out there, so feel free to explore a bit more to see what they're capable of.
-
-## Extra Resources
-
-- [Debugging Express](https://expressjs.com/en/guide/debugging.html)
 
