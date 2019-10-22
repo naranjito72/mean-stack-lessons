@@ -57,7 +57,7 @@ task: [<< índice de contenidos >>](#contenido)
   
 \- __`/controllers`__ contiene las rutas de express, separadas por `modulo/area` de la aplicación (si se \- utiliza la funcionalidad de generación de estructuras de express, esta carpeta se llama __`/routes`__) 
 ---
-name:proyecto
+
 task: [<< índice de contenidos >>](#contenido)
 
 ### ESTRUCTURA DE UN PROYECTO CON EXPRESS.JS
@@ -91,7 +91,6 @@ Donde:
 
 
 ---
-name:rutas
 task: [<< índice de contenidos >>](#contenido)
 
 ### Express: Routing 
@@ -114,7 +113,7 @@ Ejemplo:
     });
 
 ---
-name:rutas
+
 task: [<< índice de contenidos >>](#contenido)
 
 ### Express: Métodos de Routing 
@@ -132,7 +131,7 @@ task: [<< índice de contenidos >>](#contenido)
     });
 
 ---
-name:rutas
+
 task: [<< índice de contenidos >>](#contenido)
 
 ### Express: Paths de Routing
@@ -165,7 +164,7 @@ task: [<< índice de contenidos >>](#contenido)
     app.get(/.*fly$/, (req, res)=> { res.send('/.*fly$/') })
 
 ---
-name:rutas
+
 task: [<< índice de contenidos >>](#contenido)
 
 ### Express: Parámetros de Routing
@@ -199,7 +198,7 @@ task: [<< índice de contenidos >>](#contenido)
 _TIP: El usr y pssw enviarlos como key|value desde POSTMAN._
 
 ---
-name:rutas
+
 task: [<< índice de contenidos >>](#contenido)
 
 ### Express: Routing handlers
@@ -216,7 +215,7 @@ task: [<< índice de contenidos >>](#contenido)
 
 ---
 
-name:rutas
+
 task: [<< índice de contenidos >>](#contenido)
 
 ### Express: Routing   `app.route()`
@@ -233,7 +232,7 @@ task: [<< índice de contenidos >>](#contenido)
 
 ---
 
-name:rutas
+
 task: [<< índice de contenidos >>](#contenido)
 
 ### Express: `express.Router`
@@ -266,7 +265,7 @@ task: [<< índice de contenidos >>](#contenido)
 
 ---
 
-name:rutas
+
 task: [<< índice de contenidos >>](#contenido)
 
 ### Express Routing: Métodos de respuesta
@@ -322,26 +321,17 @@ Express soporta de forma navitva el envío de estos ficheros.
 
 Normalmente se almacenan en una carpeta `public`:
 
-Ej:
-```
-$ mkdir public
-```
 Creamos un directorio para imágenes y descargamos la imagen de gato a este directorio
 
-```shell
-$ cd public
-$ mkdir images
-$ cd images
-$ curl -o cool-cat.jpg http://wallpapercave.com/wp/X7VjxFk.jpg
-```
+.inverse[<code class="codigo">public/images/ curl -o cool-cat.jpg http://wallpapercave.com/wp/X7VjxFk.jpg</code>
+]
+
 Desde Express, se indica al servidor el directorio de ficheros estáticos `public`:
 
 ```javascript
 // ...
 const app = express();
-
 app.use(express.static('public'));
-
 app.get('/', (request, response, next) => {
 // ...
 ```
@@ -350,17 +340,12 @@ Desde [localhost:3000/images/cool-cat.jpg](http://localhost:3000/images/cool-cat
 
 El contenido estático se puede incorporar dentro de plantillas HTML.
 ---
-
-name:estaticos
 task: [<< índice de contenidos >>](#contenido)
 
 ### Ficheros estáticos: Estilos
 
-```
-$ mkdir public/stylesheets
-$ touch public/stylesheets/style.css
-```
-
+.inverse[<code class="codigo">public/styles/touch style.css</code>
+]
 
 ```css
 body {
@@ -372,25 +357,288 @@ body {
 Creamos una nueva ruta: 
 
 ```javascript
-// ...
 
 app.get('/hello', (request, response, next) => {
   response.send(`
     <!doctype html>
-    <html>
-      <head>
-        <link rel="stylesheet" href="stylesheets/style.css">
-      </head>
-      <body>
-        This is my second route
-      </body>
-    </html>
-  `);
-});
+    <html>  <head> 
+    <link rel="stylesheet" href="styles/style.css">  </head>
+    <body> This is my second route </body> </html>`);});
 
-// ...
 ```
-
 Visitamos [localhost:3000/hello](http://localhost:3000/hello)!
 
 ---
+class: center, middle
+
+<img src="https://imgur.com/MA6cGfk.png" width=50% height=50% alt="logo">
+
+---
+
+name: mongoose
+class: center, middle, inverse
+## [Mongoose](https://mongoosejs.com/)
+---
+
+name:mongooseintro
+task: [<< índice de contenidos >>](#contenido)
+
+### OBJECT DATA MAPPING
+
+__Data Mapper__ es un patrón de diseño utilizado para separar la capa de acceso a la base de datos de la capa de dominio que contiene una representación de los datos
+
+La capa de separación puede estar compuestas de uno más mappers (o __Data Access Objects__), que llevan a cabo la transferencia de los datos
+
+La implementación del patrón en aplicaciones con bases de datos SQL se denomina __ORM__.
+
+Con bases de datos NoSQL se conoce como __ODM__.
+
+---
+task: [<< índice de contenidos >>](#contenido)
+
+### MONGOOSE
+
+- Es un framework javascript que permite el acceso a una base de datos MongoDB usando un __modelo de objetos__
+  
+- Una __db__ contiene muchas __colecciones__ y una colección muchos __documentos__. No existe ningun requerimiento que obligue a que dos documentos de una misma colección tengan la misma estructura. Aunque normalmente se establece que dos documentos almacenados en la misma colección tendrán una estructura parecida
+  
+- En Mongoose se definen los __esquemas de documentos__; Cada esquema puede contener una lista de campos y sus restricciones:
+
+      - Tipo de dato y restricciones específicas tales como: valor mínimo, valor requerido, único,... 
+
+- Un __modelo__ representa una conexión a una colección de la bd que usa el esquema anterior. 
+
+---
+task: [<< índice de contenidos >>](#contenido)
+
+### MONGOOSE: Instalación y conexión a BD
+
+para instalar Mongoose usamos: .inverse[<code style="codigo">npm i mongoose</code>
+]
+
+para conectar a MongoDB desde Mongoose se usa el método __`createConnection()`__ con argumentos: URL de la bd y los parámetros de conexión: username, password, server host, and database name:
+
+    import mongoose from 'mongoose';
+
+    const url ='mongodb+srv://admin:1234@mean-stack-3-7ufox.mongodb.net/test'
+    const connection = mongoose.createConnection(url,
+        {
+        useNewUrlParser: true, 
+        useUnifiedTopology: true
+        });
+
+Una vez que se ha establecido la conexión, el objeto __`connection`__ emite el evento __`open`__. La conexión puede terminar con el método __`close()`__:
+
+    connection.on("open", _ => {
+      }).then(connection => console.log("Connection established") )
+        .catch(error => console.error.bind(console, 'ha habido un error'));
+
+    connection.close(error => console.log('bye'));   
+
+---
+task: [<< índice de contenidos >>](#contenido)
+
+### MONGOOSE: SCHEMAS
+
+- Los esquemas se utilizan para definir la estructura y los atributos de un documento. Cada esquema mapea a una colección de la bd y define la "forma" del documento dentro de la colección.
+  
+- Para crear un esquema determinado se genera una instancia del objeto Schema
+ 
+Ej: Esquema de dos colecciones: estudiantes y proyectos
+
+    //db/schema.js
+    const Schema = mongoose.Schema
+    const StudentSchema = new Schema({
+      name: String,
+      age: Number
+    });
+    const ProjectSchema = new Schema({
+      title: String,
+      unit: String
+    });
+
+
+---
+task: [<< índice de contenidos >>](#contenido)
+
+### MONGOOSE: SUBDOCUMENTOS
+
+En el caso de querer almacenar información referente a una relación entre objetos (subdocumentos), se almacenaría como un objeto embebido:
+Ej:
+
+    import mongoose from "mongoose";
+    const Schema = mongoose.Schema;
+
+    const StudentSchema = new Schema({
+      name: String,
+      age: Number,
+      projects:  [projectSchema]
+    });
+
+Existen dos tipos diferentes de subdocumentos: 
+- arrays de subdocumentos
+- subdocumento anidado simple (a partir de mongoose  4.2.0)
+
+---
+task: [<< índice de contenidos >>](#contenido)
+
+### MONGOOSE: MODELS
+
+- Para usar el objeto __Schema__ creado es necesario asociarlo a la conexión a la __bd__. Esta asociación se denomina __model__. 
+  
+- Para crear un modelo se utiliza el método __`model()`__ del objeto `connection`. Este método tiene dos argumentos: string del __nombre de la colección__ y un __objeto Schema__ y devuelve un objeto Model.
+
+
+        //StudentModel.js
+
+
+    export default connection => 
+      connection.model("Student", StudentSchema);
+
+
+_El primer argumento es el nombre en singular de la colección. Mongoose automáticamente busca el nombre en plural. _
+
+
+---
+
+task: [<< índice de contenidos >>](#contenido)
+
+### MONGOOSE: MODELS
+
+- Para trabajar con el modelo creado importamos el fichero en otro documento:
+
+
+      import mongoose from 'mongoose';
+      import Student from './StudentModel.mjs';
+
+      (async _ => {
+      
+          try {
+              await  mongoose.connect('mongodb://localhost:27017/test',
+          { useNewUrlParser: true, useUnifiedTopology: true });
+
+              (await Student(mongoose.connection)
+                              .find({}))
+                              .forEach(student => console.log(student.name))
+
+              mongoose.disconnect();
+
+          } catch (error) {
+              throw error;
+          }
+      })();
+
+---
+task: [<< índice de contenidos >>](#contenido)
+
+### MONGOOSE: INSERT DATA
+
+- Insertar datos en MongoDB es un proceso de dos pasos que utiliza los modelos Mongoose:
+  
+1. Instanciar un objeto usando el constructor de un __modelo__. En el ejemplo anterior el constructor es `Student()`. Una vez creado se puede manipular como cualquier objeto JavaScript. 
+2. Insertar los datos utilizando el método `save( )` del modelo, que recibe una función callback con el parámetro para tratar el error.
+
+
+    //db/schema.mjs
+
+    ...
+    let ana = new Student({
+      name: 'ana'
+    })
+    let project1 = new Project({
+      title: 'Mongoose'
+    })
+    ana.projects.push(project1);
+    ana.save((err,student)=>{
+    if(err) { console.log(err)}
+    else {console.log(student+' se guardó en la bd!!!')}
+    })
+
+---
+task: [<< índice de contenidos >>](#contenido)
+
+### MONGOOSE: PROMESAS
+
+Todos los métodos de Mongoose están preparados para trabajar con callbacks o con promesas. Ej:
+
+    //db/schema.js
+
+    ...
+    let ana = new Student({
+      name: 'ana'
+    })
+    let project1 = new Project({
+      title: 'Mongoose'
+    })
+    ana.projects.push(project1);
+    anna.save().then(student => {  console.log(student)})
+      .catch(err => {console.log(err)});
+---
+task: [<< índice de contenidos >>](#contenido)
+
+### MONGOOSE: QUERY DATA
+
+Mongoose provee de una serie de consultas predefinidas:
+
+    Model.deleteMany()
+    Model.deleteOne()
+    Model.find()
+    Model.findById()
+    Model.findByIdAndDelete()
+    Model.findByIdAndRemove()
+    Model.findByIdAndUpdate()
+    Model.findOne()
+    Model.findOneAndDelete()
+    Model.findOneAndRemove()
+    Model.findOneAndUpdate()
+    Model.replaceOne()
+    Model.updateMany()
+    Model.updateOne()
+
+- Todos los métodos pueden usarse pasando un __callbacks__ con los parámetros de error y resultado o como promesa resolviendo el cumplimiento de la __promesa__ a través del método __.then()__ o con __async/await__
+
+---
+task: [<< índice de contenidos >>](#contenido)
+
+### MONGOOSE: QUERY DATA
+
+- Mongoose provee de una serie de consultas predefinidas:
+  
+
+      Model.find({}, callback) 
+      //Busca todas las ocurrencias
+      Model.findById(someId, callback) 
+      //Busca un único modelo por id
+      Model.findOne({someKey: someValue}, callback) 
+      //Busca un único modelo por clave:valor
+      Model.remove({someKey: someValue}, callback) 
+      //Elimina todos los  modelos que cumplen la condición
+
+Ej.: Implementando los métodos dentro de un controlador: controllers/studentsController.js
+
+    import Schema from "../db/schema.js";
+    const Student = Schema.Student;
+    const Project = Schema.Project;
+    let studentsController = {
+      index(){
+        Student.find({}, (err, students) => {
+          console.log(students);
+        });
+      }
+    };
+    studentsController.index();
+
+---
+
+### Ejercicio 22
+<hr>
+
+- Implementa el resto de métodos descritos, sobre el ejemplo: show, update y delete.
+- Implementa un método que devuelva el número de estudiantes o proyectos
+- Implementa un método para borrar todos los proyectos de un estudiante
+
+---
+
+### Ejercicio 23
+<hr>
+Crea la capa de persistencia del ejemplo de movies
