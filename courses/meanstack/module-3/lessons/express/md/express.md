@@ -614,7 +614,7 @@ task: [<< índice de contenidos >>](#contenido)
       Model.remove({someKey: someValue}, callback) 
       //Elimina todos los  modelos que cumplen la condición
 
-Ej.: Implementando los métodos dentro de un controlador: controllers/studentsController.js
+Ej.: Implementando los métodos dentro de un controlador: `controllers/studentsController.js`
 
     import Schema from "../db/schema.js";
     const Student = Schema.Student;
@@ -642,3 +642,80 @@ Ej.: Implementando los métodos dentro de un controlador: controllers/studentsCo
 ### Ejercicio 23
 <hr>
 Crea la capa de persistencia del ejemplo de movies
+
+---
+task: [<< índice de contenidos >>](#contenido)
+
+### MONGOOSE: VALIDATORS
+
+- Mongoose ofrece validadores a nivel de campo de un documento, que se ejecutan en el momento de guardar el documento.
+
+- Si ocurre un error de validación, la operación de guardado se interrumpe y el error pasa al _callback_.
+
+- Existen __validadores predefinidos__ y opciones para crear __validaciones personalizadas__:
+
+- Validadores predefinidos: 
+  
+    - Todos los tipos de datos: `Required`
+    - Numbers: `min` y `max`
+    - Strings: `enum`, `match`, `minlength` y `maxlength`
+
+
+      const UserSchema = new Schema({
+        username: {
+          type: String,
+          *unique: true,
+          required: true
+        }
+      });
+
+_*unique no es un validador como tal. Es un helper para la construcción de índices; obliga a construir un índice sobre el campo_ 
+
+---
+task: [<< índice de contenidos >>](#contenido)
+
+### MONGOOSE: VALIDATORS
+
+- __`required`__: valida la existencia del campo. Evita que se guarde un documento sin este campo.
+- __`unique`__: Valida que el valor a guardar sea único en la colección.
+- __`match`__: Valida que el valor a  guardar tenga un determinado patrón
+- __`enum`__: Obliga a que el valor sea uno de los definidos en una colección de strings.
+
+Ej.:
+
+    const  UserSchema = new Schema({
+      username: {   
+        type: String,
+        unique: true,
+        required: [true, 'nombre obligatorio']
+      },
+      email: {
+        type: String,
+        match: /.+\@.+\..+/
+      },
+      role: {
+        type: String,
+        enum: ['Admin', 'Owner', 'User']
+      },
+    });
+
+---
+task: [<< índice de contenidos >>](#contenido)
+
+### MONGOOSE: VALIDATORS
+
+Podemos definir validaciones personalizadas mediante la propiedad __`validate`__. A la propiedad se le pasa un array con una función validadora:
+
+    const UserSchema = new Schema({
+      ...
+      password: {
+        type: String,
+        validate: {
+          function(password) {
+            return password.length >= 6;
+          },
+          'Password should be longer'
+        }
+      },
+    });
+
