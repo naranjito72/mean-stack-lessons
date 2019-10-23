@@ -719,3 +719,168 @@ Podemos definir validaciones personalizadas mediante la propiedad __`validate`__
       },
     });
 
+---
+task: [<< índice de contenidos >>](#contenido)
+
+### MONGOOSE: MIDDLEWARE
+
+También conocidos como __hooks__, son funciones que toman el control durante la ejecución de funciones asíncronas.
+
+Existen dos tipos: __pre__ y __post__.
+
+Se define a nivel de esquema y puede modificar la consulta o el documento mismo al ser ejecutado. 
+
+Mongoose presenta 4 tipos de middleware:
+
+- __Documento__. 
+
+  Incorpora un middleware en las siguientes funciones: `validate`, `save`, `remove`, `init` (síncrono)
+
+- __Query__
+
+  Midleware para `count`, `find`(`findOne`, `findOneAndRemove`,`findOneAndUpdate`), `remove` y `update` (`updateOne`,`updateMany`)
+
+- __Aggregate__
+
+- __Model__
+  
+  `insertMany`
+
+---
+task: [<< índice de contenidos >>](#contenido)
+
+### MONGOOSE: PRE middleware
+
+- El middleware __`pre`__ se ejecuta antes de que suceda la operación
+
+- Ejemplo, un middleware pre-save sera ejecutado antes de guardar el documento. Útil para:
+    -  validaciones más complejas,
+    -  asignación de valores por defecto o 
+    -  para eliminar documentos dependientes (eliminando un usuario eliminamos sus posts)
+  
+Las funciones __Pre__ se ejecutan de forma consecutiva cuando cada función invoca el método `next()`.
+
+    const schema = new Schema(..); 
+    schema.pre('save', next => {
+    // do stuff 
+    next(); 
+    }); 
+
+Con promesas...
+
+    schema.pre('save', async function() { 
+      await doStuff(); 
+      await doMoreStuff(); 
+    }); 
+
+---
+task: [<< índice de contenidos >>](#contenido)
+
+### MONGOOSE: POST middleware
+
+El middleware __`post`__ se ejecuta después de la operación
+Ejemplo `post-save` se ejecutará después de grabar en la bd.
+Las funciones post si llevan dos parámetros el segundo será el método `next` que llamará al siguiente post middleware
+Ej:
+
+    schema.post('save', function(doc) {
+    console.log('%s has been saved', doc._id); }); 
+
+---
+### Ejercicio 24
+<hr>
+
+Sobre el ejercicio 22 (students y projects) crear un middleware __`pre`__ que convierta el campo `name` a mayúsculas antes de guardarlo en la bd
+
+Generar una función de log con un middleware post que recoja los registros borrados de la aplicación
+
+---
+task: [<< índice de contenidos >>](#contenido)
+
+### MONGOOSE: DBRef
+
+- En MongoDB podemos definir referencias a otras colecciones incluyendo el __`_id`__ de la colección referenciada y la propiedad __`DBRef`__.
+- En los schemas de Mongoose la relación se establece de manera análoga utilizando una propiedad que contenga un array de propiedades: 
+
+
+       {type: Schema.ObjectId, ref:'Nombre_colección' }
+
+Ej:
+
+    import mongoose from 'mongoose';
+
+      const Schema = mongoose.Schema;
+
+      const PersonSchema = new Schema({
+        name : String,
+        age : Number,
+        stories : [{ type: Schema.ObjectId, ref: 'Story' }]
+        });
+
+      const StorySchema = new Schema({
+        _creator : { type: Schema.ObjectId, ref: 'Person' },
+        title : String,
+        fans : [{ type: Schema.ObjectId, ref: 'Person' }]
+      });
+
+      const Story = mongoose.model('Story', StorySchema);
+      const Person = mongoose.model('Person', PersonSchema);
+
+---
+task: [<< índice de contenidos >>](#contenido)
+
+### MONGOOSE: DBRef
+
+Guardando documentos en la bd:
+
+
+    try{
+
+      const aaron = new Person({ name: 'Aaron', age: 100 });
+      
+      await aaron.save();
+      
+      const story1 = new Story({
+          title: "A man who cooked Nintendo",
+          _creator: aaron._id
+        });
+
+      await story1.save();
+
+    } catch (error){
+      console.log(error);
+    }
+
+---
+task: [<< índice de contenidos >>](#contenido)
+
+### MONGOOSE: Populate
+
+- Para recuperar documentos referenciados utilizamos el método __`populate`__ para incorporar el contenido del documento hijo al documento padre.
+
+ - En este caso se utiliza la función de callback __`.exec()`__ para ejecutar la función.
+
+
+      const story = await Story
+        .findOne({ title: /Nintendo/i })
+        .populate('_creator') // <--
+        .exec();
+
+      console.log('The creator is %s', story._creator.name);
+        // prints "The creator is Aaron"
+      
+- Para recuperar sólo ciertos campos utilizar un array de propiedades a mostrar dentro de la función populate:
+
+
+    .populate('_creator', ['name']) // <-- only return the Persons name
+
+---
+### Ejercicio 25
+<hr>
+
+Rehacer la función __create__ del ejercicio 22 para incorporar la creación de __proyectos__ dentro de la colección __proyectos__ y después incorporarlos por referencia a la colección __students__. Para ello tienes que seguir los siguientes pasos:
+
+  - Rehacer el `studentSchema` incorporando el `_id` del `projectSchema` por referencia en una propiedad projects.
+  - Convertir la función `create` en `async` y rehacer la lógica de la función para guardar proyectos en la colección `projects` y `students` que referencien los projects.
+  - Devolver el documento students con el contenido del documento projects.
+
