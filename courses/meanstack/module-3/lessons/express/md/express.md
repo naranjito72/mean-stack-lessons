@@ -884,3 +884,88 @@ Rehacer la función __create__ del ejercicio 22 para incorporar la creación de 
   - Convertir la función `create` en `async` y rehacer la lógica de la función para guardar proyectos en la colección `projects` y `students` que referencien los projects.
   - Devolver el documento students con el contenido del documento projects.
 
+---
+task: [<< índice de contenidos >>](#contenido)
+
+### MONGOOSE: DISCRIMINATORS
+
+- Es un mecanismo de herencia de esquemas
+- Se utilizan para almacenar documentos similares en la misma colección pero con diferentes restricciones de esquema
+- Se define un discriminador sobre el esquema base o padre:
+
+
+    const options = {discriminatorKey: 'itemtype'};
+
+
+- En la instanciación del objeto `Schema` se pasa el array de opciones:
+
+
+      const baseSchema = new Schema({
+          title: { type: String, required: true },
+          date_added: { type: Date, required: true },
+          redo: { type: Boolean, required: false },
+        },options)
+
+- Se crea el modelo para el esquema base: 
+
+    const Base = mongoose.model('item',baseSchema);
+
+---
+task: [<< índice de contenidos >>](#contenido)
+
+### MONGOOSE: DISCRIMINATORS
+
+Para generar los esquemas hijos debemos definir el campo discriminatorio mediante la función: `ModeloBase.discriminator(schemaName,schema,discriminatorPropValue)`
+
+Ejemplo:
+
+
+      const Book = Base.discriminator('Book', new mongoose.Schema({
+      author: { type: String, required:true },}), 'book');
+
+      const Movie = Base.discriminator('Movie', new mongoose.Schema({
+      director: { type: String, required: true },}), 'movie');
+      
+      const Tvshow = Base.discriminator('Tvshow', new mongoose.Schema({
+      season: { type: Number, required: true },}), 'tvshow');
+
+Ej.: Generamos los modelos hijos:
+
+
+      BookMod = mongoose.model('Book');
+      MovieMod = mongoose.model('Movie');
+      TvShowMod = mongoose.model('Tvshow');
+---
+task: [<< índice de contenidos >>](#contenido)
+
+### MONGOOSE: DISCRIMINATORS
+
+Para persistir los datos usamos la función __`create`__ sobre cada modelo hijo:
+
+    const bookdocs = [{title: 'The castle', author: 'F.Kafka', date_added: Date.now()}];
+    const mooviedocs = [{title: 'Matrix', director: 'Wachowsky Bros.', date_added: Date.now()}];
+    const tvdocs = [{title: 'Games of Thrones', season: 1, date_added: Date.now()}];
+
+    BookMod.create(bookdocs);
+    MovieMod.create(mooviedocs);
+    TvShowMod.create(tvdocs);
+
+Podemos obtener el listado completo mediante el modelo base:
+
+
+    const docs = await Base.find();
+
+---
+
+### Ejercicio 26
+
+En nuestro ejercicio de estudiantes y proyectos queremos tener una única colección de personas en las que tengamos estudiantes con sus proyectos y añadiremos también documentos de profesores (teachers).
+
+- Los estudiantes y profesores compartirán el campo name. 
+- Los estudiantes mantendrán su relación de proyectos.
+- Los profesores tendrán un campo subject para almacenar la asignatura que imparten
+
+El campo discriminatorio será el __role__
+
+Modificar el método create para que almacene profesores o estudiantes según venga informado el campo role en la petición.
+
