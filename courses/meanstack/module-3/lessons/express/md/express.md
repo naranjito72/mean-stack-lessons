@@ -969,3 +969,184 @@ El campo discriminatorio será el __role__
 
 Modificar el método create para que almacene profesores o estudiantes según venga informado el campo role en la petición.
 
+---
+name:errores
+task: [<< índice de contenidos >>](#contenido)
+
+### EXPRESS: ERROR HANDLING
+
+Express cuenta con un manejador de errores que se ocupa de todos los errores que puedan ocurrir en la aplicación. La función  de manejo de errores se añade automáticamente al final del _stack_ de funciones _middleware_.
+
+Hay que asegurar que Express captura y procesa todos los errores relacionados con el manejo de rutas y _middlewares_.
+
+En el caso de errores devueltos por funciones asíncronas, es necesario pasarlos mediante la función __`next()`__. Por ejemplo:
+
+
+    app.get('/', async (req, res, next) => {
+      try{
+
+      const data = await fs.readFile('/file-does-not-exist')
+      res.send(data);
+
+      } catch(error){
+          return next(error);
+      }
+      })
+
+---
+task: [<< índice de contenidos >>](#contenido)
+
+### EXPRESS: ERROR HANDLING FUNCTIONS
+
+Las funciones propias de manejo de errores se definen de forma análoga a cualquier función de _middleware_, excepto porque requieren cuatro argumentos en lugar de tres: __`(err, req, res, next)`__. Por ejemplo:
+
+
+    app.use(function(err, req, res, next) {
+      console.error(err.stack);
+      res.status(500).send('Something broke!');
+    });
+
+El middleware de manejo de errores se define al final, después de otras llamadas de rutas y de `app.use()`; por ejemplo:
+
+
+    import methodOverride from 'method-override';
+
+    app.use(express.urlencoded());
+    app.use(methodOverride());
+    app.use((err, req, res, next)=> {
+      // logic
+    });
+---
+
+name:errores
+task: [<< índice de contenidos >>](#contenido)
+
+### EXPRESS: ERROR HANDLING FUNCTIONS
+
+Las respuestas desde una función de middleware pueden estar en el formato que se prefiera, por ejemplo, una __página de errores HTML__, un __mensaje simple__ o una __serie JSON__.
+
+A efectos de la organización (y de infraestructura de nivel superior), se pueden definir varias funciones de middleware de manejo de errores.
+
+Por ejemplo, si se define un manejador de errores para las solicitudes realizadas utilizando XHR, y otro genérico para las que no lo tienen, puedeN utilizarse los siguientes mandatos:
+
+
+    import methodOverride from 'method-override';
+
+    app.use(express.urlencoded());
+    app.use(methodOverride());
+    app.use(logErrors);
+    app.use(clientErrorHandler);
+    app.use(errorHandler);
+---
+
+name:errores
+task: [<< índice de contenidos >>](#contenido)
+
+### EXPRESS: ERROR HANDLING FUNCTIONS
+
+los __`logErrors`__ genéricos pueden escribir información de solicitudes y errores en __`stderr`__, por ejemplo:
+
+
+    const logErrors = (err, req, res, next) => {
+      console.error(err.stack);
+      next(err);
+    }
+
+__`clientErrorHandler`__ se define de la siguiente manera; en este caso, el error se pasa de forma explícita al siguiente:
+
+
+    const clientErrorHandler = (err, req, res, next) => {
+      if (req.xhr) {
+        res.status(500).send({ error: 'Something failed!' });
+      } else {
+        next(err);
+      }
+    }
+
+La función que detecta todos los errores de __`errorHandler`__ quedaría:
+
+
+    const errorHandler = (err, req, res, next) => {
+      res.status(500);
+      res.render('error', { error: err });
+    }
+---
+name:errores
+task: [<< índice de contenidos >>](#contenido)
+
+### EXPRESS: ERROR HANDLING FUNCTIONS
+
+Si se cuenta con una ruta manejada por varias funciones de devolución de llamada (_callbacks_), se puede utilizar el parámetro __`route`__ para saltar el siguiente manejador. Por ejemplo:
+
+
+    app.get('/a_route_behind_paywall',
+      function checkIfPaidSubscriber(req, res, next) {
+        if(!req.user.hasPaid) {
+
+          // continue handling this request
+          next('route');
+        }
+      }, function getPaidContent(req, res, next) {
+        PaidContent.find(function(err, doc) {
+          if(err) return next(err);
+          res.json(doc);
+        });
+      });
+
+_En este ejemplo, se omitirá el manejador getPaidContent, pero los restantes manejadores en app para /a_route_behind_paywall continuarán ejecutándose._
+
+Las llamadas a __`next()`__ y __`next(err)`__ indican que el manejador actual está completo y en qué estado. 
+
+__`next(err)`__ omite el resto de manejadores de la cadena, excepto los configurados del modo descrito anteriormente.
+
+---
+name:errores
+task: [<< índice de contenidos >>](#contenido)
+
+### EXPRESS: BUILT-IN ERROR HANDLING FUNCTION
+
+En el caso de invocar `next()` con un error después de haber empezado a escribir la respuesta (por ejemplo, si encuentra un error mientras se envía la respuesta al cliente), el manejador de errores predeterminado de Express cierra la conexión y falla la solicitud.
+
+Por lo tanto, cuando se añada un manejador de errores personalizado, se recomienda delegar en los mecanismos de manejo de errores predeterminados de Express, cuando las cabeceras ya se han enviado al cliente:
+
+
+    const errorHandler = (err, req, res, next) => {
+        if (res.headersSent) {
+          return next(err);
+        }
+        res.status(500);
+        res.render('error', { error: err });
+      }
+
+---
+
+### Ejercicio 27
+
+HTTP define unos 40 códigos de estado (_STATUS_CODE_) que se pueden utilizar para transferir el resultado de una petición.Los códigos se dividen en 5 categorías:
+
+- __1xx__: Informativos - Comunicam información del nivel de protocolo transferido
+- __2xx__: Exito -La petición se ha aceptado sin errores
+- __3xx__: Redirección - El cliente debe realizar alguna acción adicional para completar la petición
+- __4xx__: Error de Cliente - Códigos de error relativos a la petición
+- __5xx__: Server Error - El servidor es el responsable de estos errores
+
+Utiliza la librería [http-errors](https://www.npmjs.com/package/http-errors) para manejar los errores de la API. 
+
+1- Crea un módulo que exporte las funciones que se utilizarán como middleware de manejo de errores.
+
+2- Genera una función para el log de errores, una para atender los errores de petición (4xx) y una genérica (500). 
+
+El módulo se incluirá dentro de una carpeta middlewares del ejercicio de `student-api`.
+Adapta todos los métodos de la API para que devuelvan o pasen el error. Tal como se describe en la presentación.
+
+---
+
+### Referencias:
+
+- [Error Handling in Node.js](https://www.joyent.com/node-js/production/design/errors)
+- [Express error handling](http://expressjs.com/en/guide/error-handling.html)
+- [Easier Error Handling Using Async/Await](https://medium.com/@jesterxl/easier-error-handling-using-async-await-b9ab0cb938e)
+
+
+---
+
