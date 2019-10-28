@@ -1147,6 +1147,161 @@ Adapta todos los métodos de la API para que devuelvan o pasen el error. Tal com
 - [Express error handling](http://expressjs.com/en/guide/error-handling.html)
 - [Easier Error Handling Using Async/Await](https://medium.com/@jesterxl/easier-error-handling-using-async-await-b9ab0cb938e)
 
+---
+
+name:authentication
+task: [<< índice de contenidos >>](#contenido)
+
+### WEB AUTHENTICATION
+
+- [HTTP Basic y Digest authentication](#authbasic)
+- [HTTPs](#https)
+- Cookies 
+- Tokens
+- Signatures 
+- One-time passwords
+- JWT
+- Passport.js
+---
+
+name:authbasic
+task: [<< índice de contenidos >>](#contenido)
+
+### HTTP Basic Authentication: Cliente
+
+- La __autenticación HTTP Básica__ es un método que permite al cliente enviar un __usuario__ y una __password__ al hacer una petición
+
+- Es la manera más simple de forzar el control de acceso y no requiere cookies o sessions
+
+- Se aconseja usarlo con HTTPS
+
+- Para usarlo, el cliente tiene que enviar una cabecera del mensaje con la propiedad Authorization junto a cada petición. El usuario y la password no se encripta, pero se construye de la siguiente manera:
+    - se concatenan username y password en un string con la siguiente estructura:
+	username:password
+    - El string se codifica con Base64
+    - Se coloca la palabra Basic delante del valor codificado:
+
+
+        Authorization: Basic am9objoxMjM0
+---
+
+name:authbasicserver
+task: [<< índice de contenidos >>](#contenido)
+
+### HTTP Basic Authentication: Servidor
+
+Express ya no implementa específicamente un módulo de autenticación.
+Aconseja utilizar: [basic-auth](https://www.npmjs.com/package/basic-auth)
+
+Ej:
+
+    //config/auth.mjs
+
+    import basicAuth from 'basic-auth';
+
+    const admins = { 'john': { password: '1234' }, }; 
+    
+    export default (error, request, response, next) =>    { 
+    
+    const user = auth(request); 
+      if (!user || !admins[user.name] || admins[user.name].password !== user.pass) { 
+          response.set('WWW-Authenticate', 'Basic realm="example"'); 
+          return response.sendStatus(401); 
+       } 
+          return next(error); 
+       };
+
+    //server.mjs
+    
+    import express from 'express';
+    import auth from './config/auth';
+    
+    const app = express();
+      app.use(auth);
+      app.get('/',(req,resp)=>{
+          resp.send(`Welcome user`)
+      });
+      app.listen('3000');
+
+---
+name:https
+task: [<< índice de contenidos >>](#contenido)
+
+### HTTPS: HTTP Secure
+
+- Funciona desde el puerto 443 y utiliza un cifrado basado en SSL/TLS con el fin de crear un canal cifrado entre el cliente y el servidor. 
+- Se utilizan los protocolos SSL (Secure Sockets Layer) -deprecado- y TLS (Transmission Layer Security) para enviar paquetes cifrados a través de Internet. Se pueden utilizar para más de un protocolo, no sólo con HTTP. __HTTP + SSL/TLS = HTTPS__
+  
+- Se basa en el sistema clave pública-clave privada:
+    - El administrador de un servidor Web crea un certificado de clave pública, firmado por una autoridad de certificación.
+    - El cliente envía una petición cifrada con la clave pública que se descifra en el servidor con la clave privada.
 
 ---
 
+name:httpsexpress
+task: [<< índice de contenidos >>](#contenido)
+
+### HTTPS con Express
+
+Ej:
+1. Instalar en Windows la aplicación openssl desde: https://slproweb.com/products/Win32OpenSSL.html
+
+2. Crear un certificado autofirmado:
+.inverse[<code class = "codigo">openssl req -nodes -new -x509 -keyout server.key -out server.cert 
+</code>
+]
+
+3. Incorporar el cifrado al servidor:
+
+
+    //server.mjs
+    import express from 'express';
+    import auth from './config/auth';
+    import fs from 'fs';
+    //version http 1.1 import https from 'https';
+    import http2 from 'http2';
+    const app = express();
+
+    app.use(auth)
+  
+    app.get('/',(req,resp)=>{
+        resp.send(`Welcome user`)
+    })
+    http2.createSecureServer({ //http1.1: https.createServer({
+        key: fs.readFileSync('server.key'),
+        cert: fs.readFileSync('server.cert')
+    }, app)
+    .listen(3000, _=> {
+        console.log('Example app listening on port 3000! Go to https://localhost:3000/') })
+
+---
+### Ejercicio 28
+<hr>
+
+- Implementar la autenticación básica en el ejemplo 27.
+  
+- Almacenar una password enviada por un usuario (parámetros del request) en la colección Student en el campo password codificada en base64. _tip: buscar codificación vía buffer en Node.js_
+
+- Construir un módulo de autenticación en middlewares/...
+
+- Proteger con autenticación el método get.
+
+<hr>
+<hr>
+
+
+![Passport](https://imgur.com/NT5zWbQ.png) __Passport.js__ es un _middleware_ de autenticación para Node.js. Rehacer el ejercicio anterior para utilizar la [autenticación básica de Passport.js](http://www.passportjs.org/docs/basic-digest/)
+---
+
+name:authbasicserver
+task: [<< índice de contenidos >>](#contenido)
+
+### HTTP Basic Authentication: Desventajas
+
+- El usuario y la password se envían con cada petición, de esta manera están expuestos incluso en servidores HTTPS
+  
+- No hay manera de desconectar a un usuario que utiliza Basic auth
+
+- La expiración de las credenciales no es trivial. Se debe pedir al usuario que cambie la password
+
+- Para obtener un certificado TLS gratis: https://letsencrypt.org/about/
