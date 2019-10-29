@@ -1258,8 +1258,9 @@ Ej:
     import express from 'express';
     import auth from './config/auth';
     import fs from 'fs';
-    //version http 1.1 import https from 'https';
-    import http2 from 'http2';
+    //version http 1.1 
+    import https from 'https';
+
     const app = express();
 
     app.use(auth)
@@ -1267,7 +1268,7 @@ Ej:
     app.get('/',(req,resp)=>{
         resp.send(`Welcome user`)
     })
-    http2.createSecureServer({ //http1.1: https.createServer({
+    https.createServer({
         key: fs.readFileSync('server.key'),
         cert: fs.readFileSync('server.cert')
     }, app)
@@ -1305,3 +1306,290 @@ task: [<< índice de contenidos >>](#contenido)
 - La expiración de las credenciales no es trivial. Se debe pedir al usuario que cambie la password
 
 - Para obtener un certificado TLS gratis: https://letsencrypt.org/about/
+
+---
+
+
+name:authdigest
+task: [<< índice de contenidos >>](#contenido)
+
+### HTTP Autenticación Digest
+
+- Método que utiliza la _password_ y otros bits de información para crear un __hash__ que se envía al servidor para realizar la identificación
+<br>
+
+|HTTP Digest Authentication|	HTTP Basic Authentication
+|---|---
+|Las credenciales siempre viajan encriptadas|	Credenciales en texto plano
+|No requiere otros sistemas de seguridad|	Requiere otros sistemas de seguridad adicionales como HTTPS
+|Las credenciales deberían ser encriptadas, incluyendo username y realm|	Las passwords pueden ser mantenidas encriptadas
+|Se puede configurar para mantener la integridad de los datos entrantes|	Sólo tiene el propósito de la autenticación
+|Cada llamada requiere dos peticiones al cliente|	Requiere SSL para ser más seguro, lo cual hace que sea más lento que HTTP
+---
+
+name:authdigest
+task: [<< índice de contenidos >>](#contenido)
+
+### HTTP Autenticación Digest
+
+- Pasos de la autenticación:
+  
+    + El cliente hace una petición inicial sin credenciales.
+    + El servidor responde con un __nonce__, que es un único string de datos generados por el servidor + un __realm__ (que indica qué parte del site es  accessible y qué tipo de credenciales debe proporcionar el cliente
+    + El cliente responde con el nonce y las credenciales encriptadas – username, password y realm
+    + El servidor sirve la información demandada o lanza un error 
+
+- Para incorporar autenticación HTTP Digest se pueden utilizar módulos predefinidos como __http-digest__ o __Passport.js__ 
+---
+
+name:authdigest
+task: [<< índice de contenidos >>](#contenido)
+
+### HTTP Autenticación Digest
+
+
+    // HTTP module
+    const http = require('http');
+    
+    // Authentication module.
+    const auth = require('http-auth');
+    
+    const digest = auth.digest({
+        realm: "Simon Area.",
+        file: __dirname + "/./data/users.htdigest" // vivi:anna, sona:testpass
+    });
+
+
+
+    // Creating new HTTP server.
+    http.createServer(digest, (req, res) => {
+        res.end(`Welcome to private area - ${req.user}!`);
+    }).listen(1337, () => {
+        // Log URL.
+        console.log("Server running at http://127.0.0.1:1337/");
+    });
+
+
+
+    //data/users.htdigest
+    vivi:Simon Area.:fd805820dae2cf2672473464eaa4b414
+    sona:Simon Area.:86482b02439333102d7c6f374fc43afe
+    frida:Other Area.:8310c3dcea3a63dd0c76970d682abf0f
+
+---
+
+name:authtoken
+task: [<< índice de contenidos >>](#contenido)
+
+### Tokens
+
+Porción de datos(texto) que identifica una petición. Normalmente se envía en la cabecera de la petición como cualquier dato de autenticación, como __session__ y __cookies__ (en el caso de HTTP)
+
+Ej de token:  ```Bearer 0a4d55a8d778e5022fab701977c5d840bbc486d0```
+
+
+El token no contiene ninguna información, toda la información debe almacenarse en el servidor. 
+
+Dos tipos de tokens:
+
+- tokens autocontenidos
+- tokens opacos
+
+---
+name:opacos
+task: [<< índice de contenidos >>](#contenido)
+
+### Tokens opacos (tokens de acceso)
+
+- Son tokens que el cliente no puede ver, no requieren ser firmados ni divulgados sus protocolos 
+
+- No contiene información útil que pueda ser extraída. Funcionan de forma similar a ids de session, son sólo secuencias de caracteres.
+
+- Los campos con información adicional deben almacenarse en ambas partes para establecer la comunicación. 
+
+- Se utilizan para informar a las API que el usuario ya ha sido autenticado por otros medios y puede acceder a la información
+
+---
+name:jwt
+task: [<< índice de contenidos >>](#contenido)
+
+### Tokens transparentes o autocontenidos
+
+- Son los más utilizados en la autenticación de APIs
+
+- Permiten hacer aplicaciones escalables que puedan ser utilizadas con cualquier front-end
+
+- El Cliente envía un código al servidor y el servidor se encarga de descifrarlo y comprobar la identidad del usuario, si está registrado y qué tipo de acceso tiene.
+
+- El estándar más utilizado es __JWT (JSON Web Token)__
+
+Ej https://jwt.io/:
+
+
+    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ
+    zdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4
+    gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJ
+    SMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+---
+name:jwt
+task: [<< índice de contenidos >>](#contenido)
+
+### JWT (JSON WEB TOKEN)
+
+  Tres partes:
+-   __Header__ (cabecera) tiene dos campos:
+   
+    -   El tipo de token: JWT
+  
+    -   El algoritmo utilizado para la encriptación: HS256 o RS256.
+       
+          + __HS256__: Es un algoritmo simétrico, sólo requiere una clave secreta para desencriptarlo.
+          
+          + __RS256__: Es asimétrico, requiere clave pública y privada.
+
+-  __Payload__ (Datos del usuario). Parte principal, presenta tres tipos de propiedades:
+http://www.iana.org/assignments/jwt/jwt.xhtml
+
+    - Públicas
+    
+    - Privadas      
+    
+    - Registradas
+
+- __Signature__: La firma. Está formada por los anteriores componentes (Header y Payload) cifrados en Base64 con una clave secreta (almacenada en el servidor). Sirve de Hash para comprobar que todo está bien.
+
+---
+name:jwt
+task: [<< índice de contenidos >>](#contenido)
+
+### JWT con Node.JS
+
+![](https://imgur.com/OWObDGQ.png)
+
+---
+name:jwt
+task: [<< índice de contenidos >>](#contenido)
+
+### JWT con Node.JS: El usuario se registra
+
+- Se registran los datos con la password encriptada
+- Creamos un middleware de __mongoose__ que procesa la encriptación de la clave con __bcrypt__:
+
+    UserSchema.pre('save', (next) => {
+    let user = this
+    
+    //if (!user.isModified('password')) return next()
+    
+    bcrypt.genSalt(10, (err, salt) => {
+    if (err) return next(err)
+    
+    bcrypt.hash(user.password, salt, null, (err, hash) => {
+    if (err) return next(err)
+    user.password = hash
+    
+    next()
+    })})})
+
+---
+name:jwt
+task: [<< índice de contenidos >>](#contenido)
+### El servidor genera un token basado en los datos del usuario registrado 
+
+
+    const jwt = require('jwt-simple')
+    const moment = require('moment')
+    const config = require('../config')
+    function createToken (user) {
+    const payload = {
+    sub: user._id,
+    iat: moment().unix(),
+    exp: moment().add(14, 'days').unix()
+    }
+    return jwt.encode(payload, config.SECRET_TOKEN)
+    }
+### y lo envía al cliente
+
+
+    req.user = user
+    res.status(200).send({
+    message: 'Te has logueado correctamente',
+    token: service.createToken(user)
+    })
+
+---
+name:jwt
+task: [<< índice de contenidos >>](#contenido)
+### El cliente pasa el token cada vez que realiza una petición a la API
+
+---
+name:jwt
+task: [<< índice de contenidos >>](#contenido)
+### El servidor verifica el token y procesa la petición
+
+
+    function isAuth (req, res, next) {
+    if (!req.headers.authorization) {
+    return res.status(403).send({ message: 'No tienes autorización' })
+    }
+    const token = req.headers.authorization.split(' ')[1]
+    services.decodeToken(token)
+    .then(response => {
+    req.user = response
+    next()
+    })
+    .catch(response => {
+    res.status(response.status)
+    })
+    }
+
+
+    function decodeToken (token) {
+    const decoded = new Promise((resolve, reject) => {
+    try {
+    const payload = jwt.decode(token, config.SECRET_TOKEN)
+    if (payload.exp <= moment().unix()) {
+    reject({
+    status: 401,
+    message: 'El token ha expirado'
+    })
+    }
+    resolve(payload.sub)
+    } catch (err) {
+    reject({
+    status: 500,
+    message: 'Invalid Token'
+    }) } })
+    return decoded }
+
+---
+name:auth2
+task: [<< índice de contenidos >>](#contenido)
+### OAuth 2.0 JWT (Passport.js)
+
+Instalación estrategia oauth2-jwt-bearer: <code class="codigo"> npm install passport-oauth2-jwt-bearer </code>
+
+Configuración de la estrategia:
+
+
+    const ClientJWTBearerStrategy = require('passport-oauth2-jwt-bearer').Strategy;
+    
+    passport.use(new ClientJWTBearerStrategy( 
+      function(claimSetIss, done) { 
+      Clients.findOne({ clientId: claimSetIss }, function (err, client) { 
+        if (err) { return done(err); } 
+        if (!client) { return done(null, false); } return done(null, client); 
+      }); 
+          } 
+    )); 
+
+Autenticación de la petición:
+
+    app.get('/profile', 
+    passport.authenticate(['oauth2-jwt-bearer'], { session: false }), 
+    oauth2orize.token()); 
+---
+name:authfb
+task: [<< índice de contenidos >>](#contenido)
+### Facebook Authentication (Passport.js)
+
+![](https://imgur.com/0d01PgC.png)
