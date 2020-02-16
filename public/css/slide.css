@@ -100,7 +100,7 @@ code {
   background: transparent !important;
 }
 
-.remark-code {
+.remark-code, .remark-inline-code {
   font-size:14px;
 }
 
