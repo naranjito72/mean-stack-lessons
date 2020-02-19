@@ -325,12 +325,65 @@ Si no importa la etiqueta, es decir, si queremos que cualquier elemento que se i
 ---
 ### Selectores de atributo
 
+Sirven para aplicar las propiedades de la regla a los elementos que tienen un atributo concreto. El selector siguiente:
 
+```css
+tag[atribut] {
+   declaracions
+}
+```
+
+afecta a todos los elementos con la siguiente sintaxis:
+
+`<etiqueta atribut="valor">...</etiqueta>`
+
+Por ejemplo: margen de 2em en todos los elementos `<img>` que tengan establecido el atributo _title_:
+
+```css
+img[title] {
+   margin-right: 2em;
+}
+```
+Los elementos afectados serían similares al siguiente:
+
+    <img src="imatges/river.png" alt="River" title="riv" />
+Y no afectaría a:
+
+    <img src="imatges/river.png" alt="River" />
 
 ---
-### Tamaños y porcentajes
+### Variantes selección atributos
 
-Hay unidades generales para los valores usados en CSS para expresar dimensiones como tamaño, ancho, alto.
+
+- `img[title="river"]`: Aplica estilos a elementos 
+con un valor de atributo determinado.
+
+- `img[title][class="preferent"]`: Filtra por más de 
+un atributo
+
+- `img[alt~="Río"]`: selecciona los elementos que 
+contienen exactamente el valor (palabras separadas 
+por espacio). Ejemplo Río Nilo.
+
+- `p[lang|=en]`: selecciona los elementos que tienen 
+como atributo la cadena o comienzan por el valor 
+seguido de un guión. Ejemplo en, en-US, en-cockney,...
+
+- `[id^=“text”]`: selecciona elementos con id que 
+comienza por 'text'
+
+- `[id$=“text”]`: selecciona elementos con id que 
+acaba con 'text'.
+
+- `[id*=“text”]`: selecciona elementos con id que contiene 'text'.
+
+---
+
+### [Tamaños y porcentajes](https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Values_and_units)
+
+Algunas propiedades que podemos establecer en las hojas de estilo tienen como valor una unidad de medida (tamaño de letra, dimensiones, márgenes,...)
+
+Estas pueden ser relativas o absolutas:
 
 
 - __px__ ( como en font-size: 12px) es la unidad de píxeles.

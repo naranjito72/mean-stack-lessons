@@ -80,6 +80,7 @@ img.big {
 }
 pre {
   /*   border-left: 0.4em solid #d7d7d7; */
+  margin:0em !important;
   padding: 0.2em !important;
 }
 
@@ -151,6 +152,8 @@ a {
 
 p {
   height: normal;
+  margin-block-start: 0.5em;
+  margin-block-end: 0.5em;
   /* line-height: 1.5em; */
 }
 
