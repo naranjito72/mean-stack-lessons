@@ -378,6 +378,130 @@ acaba con 'text'.
 - `[id*=“text”]`: selecciona elementos con id que contiene 'text'.
 
 ---
+### Selectores de descendientes
+
+Un elemento es __descendiente__ de otro cuando este elemento está contenido en el otro, sin importar el nivel. La sintaxis es:
+
+```css
+etiqueta etiqueta_descendiente { 
+   declaraciones
+}
+```
+
+Se pueden incluir tantos niveles como se quiera:
+
+```css
+div p .destaca {
+   color: red;
+}
+```
+```html
+<div>
+   <p> Esta <span class="destaca">palabra</span> la hemos destacado.</p>
+</div>
+```
+---
+
+### Selectores de hijos
+
+Un elemento es hijo de otro si es un descendiente de primer nivel.
+
+Se utiliza el símbolo __">"__
+
+```css
+etiqueta > etiqueta_hija {
+   declaraciones
+}
+```
+
+
+En un ejemplo quedaria:
+
+<iframe height="265" style="width: 100%;" scrolling="no" title="selectors-css-fills" src="https://codepen.io/rglepe/embed/PLGXMY?height=265&theme-id=default&default-tab=html,result" frameborder="no" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href='https://codepen.io/rglepe/pen/PLGXMY'>selectors-css-fills</a> by Raul Garcia
+  (<a href='https://codepen.io/rglepe'>@rglepe</a>) on <a href='https://codepen.io'>CodePen</a>.
+</iframe>
+
+---
+
+### Selectores de hermanos adyacentes
+
+Selecciona el hermano inmediatamente posterior. Se usa el símbolo __"+"__:
+
+```css
+etiqueta + etiqueta_adyacente {
+   declaraciones
+}
+```
+
+```css
+h1 + h2 { 
+   margin-top: -5mm;
+}
+```
+
+### Selector general de hermanos
+
+Con el símbolo __"~"__, selecciona todos los hermanos, adyacentes o no.
+
+```css
+h1 ~ p {
+   color: gray;
+}
+```
+
+### Agrupamiento de selectores
+
+Se agrupan separados por comas:
+
+```css
+selector1, selector2, selector3 {
+   declaracions
+}
+```
+---
+
+### Pseudoclases
+
+Palabra clave que se añade a los selectores y que especifica un estado especial del elemento seleccionado
+
+A continuació enumerem les **pseudoclasses** existents amb la seva descripció i alguns exemples:
+
+* `:first-child`: representa el primer elemento entre un grupo de elementos hermanos.
+
+* `:link`: representa un elemento que aún no se ha visitado. Coincide con cada elemento no visitado `<a>`, `<area>`, o `<link>` que tiene un atributo `href`.
+  
+* `:visited`: enlaces que el usuario ya ha visitado.
+  
+  Estas características permiten modificar los estilos por defecto que aplica el navegador a los enlaces.
+
+* `:active`: elemento (como un botón) que el usuario está activando. Cuando se usa un mouse, la "activación" generalmente comienza cuando el usuario presiona el botón primario del mouse y termina cuando se suelta. 
+  
+* `:hover`: se activa cuando el usuario se desplaza sobre un elemento con el cursor (puntero del mouse).
+    
+* `:focus`: elemento (como una entrada de formulario) que ha recibido el foco. Generalmente se activa cuando el usuario hace clic, toca un elemento o lo selecciona con la tecla "Tab" del teclado.
+
+Consultar [aquí](https://developer.mozilla.org/es/docs/Web/CSS/Pseudo-classes) la lista completa
+
+---
+
+### Pseudoelementos
+
+Permiten añadir estilos a una parte concreta del documento. Por ejemplo, el pseudoelemento `::first-line` selecciona solo la primera línea del elemento especificado por el selector.
+
+A continuació s'enumeren els pseudoelements disponibles:
+
+* `::first-line`: Selecciona la primera línea del elemento.
+
+* `::first-letter`: Selecciona la primera letra del elemento.
+
+* `::after`: Permite introducir contenido al final del elemento. Requiere la propiedad content con el valor deseado.
+
+* `::before`: Permite introducir contenido al inicio del elemento. Requiere la propiedad content con el valor deseado..
+
+Otros pseudoelementos se pueden consultar [aquí](https://developer.mozilla.org/es/docs/Web/CSS/Pseudoelementos)
+
+---
 
 ### [Tamaños y porcentajes](https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Values_and_units)
 

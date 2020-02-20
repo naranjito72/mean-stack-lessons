@@ -133,7 +133,7 @@ Luego, Confucio es numeroso».
 
 ---
 
-### Cálculo del algoritmo
+### Cálculo del algoritmo task: [<< índice de contenidos >>](#contenido)
 
 1. Elaborar un Algoritmo para calcular el área de cualquier triángulo
 rectángulo y presentar el resultado en pantalla.
