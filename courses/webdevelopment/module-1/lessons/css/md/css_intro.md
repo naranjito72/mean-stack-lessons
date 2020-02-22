@@ -244,22 +244,20 @@ Sirven para seleccionar elementos según el valor del atributo __`class`__.
 
 El atributo `class` requiere un nombre. Utilizaremos, por convenio, nombres en minúsculas. Si necesitamos varios nombres para identificar una clase los separaremos por un guión.
 
-Ej:
+Ejemplo de html:
 ```html
-<div class="red-box">
- ... // you can style this box with the .red-box selector
-</div>
-
-<div class="blue-box">
- ... // you can style this box with the .blue-box selector
-</div>
 
 <div class="red-box">
  ... // you can style this box with the .red-box selector
 </div>
 ```
 
-Las clases no hacen nada por si mismas, son sólo marcadores que se utilizan para categorizar.
+Ejemplo de css:
+```css
+.red-box {
+   declaracions
+}
+```
 
 Podemos marcar un elemento con más de un nombre de clase, para ello las escribimos separadas por un espacio:
 
