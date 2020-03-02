@@ -23,6 +23,7 @@ name:contenido
 - [Propiedades: margin, padding y border](#caja)
 - [Posicionar elementos en la pantalla](#posicionamiento)
 - [Flexbox](#flexbox)
+- [Diseño Responsive](#responsive)
 - [CSS Grid](#grid)
 - [Transiciones](#transition)
 - [Animaciones](#animation)
@@ -773,3 +774,144 @@ Ejemplo:
   See the Pen <a href='https://codepen.io/rglepe/pen/EMWrMo/'>overflow-css</a> by Raul Garcia
   (<a href='https://codepen.io/rglepe'>@rglepe</a>) on <a href='https://codepen.io'>CodePen</a>.
 </iframe>
+
+---
+
+name:flexbox
+task: [<< índice de contenidos >>](#contenido)
+### [A Complete Guide to Flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)
+
+
+__`Properties for the Parent (flex container)`__
+
+```css
+
+.container {
+
+  display: flex; /* or inline-flex */
+  
+  flex-direction: row | row-reverse | column | column-reverse;
+  
+  flex-wrap: nowrap | wrap | wrap-reverse;
+  
+  flex-flow: <‘flex-direction’> || <‘flex-wrap’>;
+  
+  justify-content: flex-start | flex-end | center | space-between | space-around 
+  | space-evenly | start | end | left | right ... + safe | unsafe;
+  
+  align-items: stretch | flex-start | flex-end | center | baseline | first baseline 
+  | last baseline | start | end | self-start | self-end + ... safe | unsafe;
+  
+  align-content: flex-start | flex-end | center | space-between | space-around 
+  | space-evenly | stretch | start | end | baseline | first baseline 
+  | last baseline + ... safe | unsafe;
+
+}
+```
+
+__`Properties for the Children (flex items)`__
+```css
+.container {
+   order: <integer>; /* default is 0 */
+   flex-grow: <number>; /* default 0 */
+   flex-shrink: <number>; /* default 1 */
+   flex-basis: <length> | auto; /* default auto */
+   flex: none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ]
+   align-self: auto | flex-start | flex-end | center | baseline | stretch;
+}
+```
+---
+name:responsive
+task: [<< índice de contenidos >>](#contenido)
+
+### Diseño Web _Responsive_
+
+RWD (Responsive Web Design) consiste en construir sitios web que trabajen correctamente en cualquier dispositivo y en cualquier tamaño de pantalla. Se centra en ofrecer una __experiencia de usuario__ intuitiva y gratificante para cualquier usuario.
+
+
+Para hacer un buen diseño _responsive_ es necesario centrarse en el tamaño del [_viewport_](https://en.wikipedia.org/wiki/Viewport).
+
+
+__No tenemos que crear un diseño específico__ para el último iPhone o Samsung, Tenemos que crear un diseño para un _viewport_ de ancho 680px, tener el sitio web perfecto para cada uno de los dispositivos del mercado llevaría muchísimo tiempo y sería muy complejo. Lo que hacemos es __agrupar los dispositivos de tamaño de pantalla similar__.
+
+---
+
+## Mobile First
+
+Creamos el diseño de las pantallas de móviles y después añadimos elementos incrementalmente para resoluciones mayores.
+
+
+- En el móvil sólo se muestra la información necesaria. Esta técnica asegura una buena experiencia UI/UX. Nos enfocamos en lo realmente importante.
+
+
+- Evitamos cargar recursos innecesarios. 
+
+---
+## [Media queries](https://developer.mozilla.org/es/docs/CSS/Media_queries)
+
+Funciones CSS que delimitan las propiedades que se aplican en función del tipo de dispositivo (opcional) y distintas características del mismo: width, height, etc.
+
+Para crear un _media query_:
+
+Dentro de una hoja CSS:
+
+```css
+@media [(media-features)] {
+  // Styles
+}
+```
+Dentro del documento HTML:
+
+`<link rel="stylesheet" media="(media-features)" href="styles.css" />`
+
+Las [`media-features`] son opcionales, y expecifican dónde aplicar los estilos de la página.
+
+Cuando las _media query_ se cumplen, se aplica la hoja de estilos o las reglas css, siguiendo las reglas en cascada de forma normal. Las hojas de estilo con media queries asociadas por etiquetas `<link>` se descargarán en el navegador aunque las media queries no se cumplan.
+
+---
+
+### Ejemplo de media queries
+<br><br><br>
+<iframe height="265" style="width: 100%;" scrolling="no" title="media-queries" src="https://codepen.io/rglepe/embed/mdJwqmv?height=265&theme-id=light&default-tab=css,result" frameborder="no" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href='https://codepen.io/rglepe/pen/mdJwqmv'>media-queries</a> by Raul Garcia
+  (<a href='https://codepen.io/rglepe'>@rglepe</a>) on <a href='https://codepen.io'>CodePen</a>.
+</iframe>
+
+---
+
+## Viewport meta tag
+
+Es una ventana gráfica que fue creada por la compañía Apple para sus productos tales como: iPhone, iPod Touch o iPad, con la finalidad de solucionar el problema sobre el tamaño de la pantalla a la hora de visualizar y navegar en un sitio web.
+
+
+La etiqueta `<meta name="viewport>` nos permite controlar el tamaño y la escala del dispositivo. Esta etiqueta permitirá cargar los estilos correctamente en distintos dispositivos. 
+
+Añadimos en la sección `<head>`:
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1">
+```
+
+---
+
+## Fuentes responsive con CSS
+
+<br>
+### Font-Size
+
+La mayor parte de los sitios web usan un tamaño de fuente entre __14 y 18 píxeles para el texto__. Los expertos recomiendan al menos 16px.
+
+También se suele recomendar el número de palabras por línea. Lo normal suele ser 18 palabras. Como regla general, usa el tamaño de fuente mayor que no aparezca desproporcionada y resulte en unas __20 palabras o menos por línea__.
+<br><br>
+
+### Line-Height
+
+Altura de línea de texto recomendada entre __1.2 to 1.45em__ por estética y buena lectura.
+<br><br>
+
+### Tamaño de fuente responsive
+
+- unidades viewport
+- media queries +px +em. (recomendado)
+<br>
+---
