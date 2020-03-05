@@ -18,6 +18,7 @@ name:contenido
 - [Algoritmos](#algoritmos)
 - [Introducción a Javascript](javascript1.html)
 - [Funciones](funciones.html)
+- [DOM](dom.html)
 
 ---
 name:algoritmos

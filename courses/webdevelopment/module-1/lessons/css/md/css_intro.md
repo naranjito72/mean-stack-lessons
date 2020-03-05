@@ -24,9 +24,9 @@ name:contenido
 - [Posicionar elementos en la pantalla](#posicionamiento)
 - [Flexbox](#flexbox)
 - [Diseño Responsive](#responsive)
+- [Efectos CSS: transform, transition, animate](#efectos)
 - [CSS Grid](#grid)
-- [Transiciones](#transition)
-- [Animaciones](#animation)
+
 
 
 ---
@@ -915,3 +915,68 @@ Altura de línea de texto recomendada entre __1.2 to 1.45em__ por estética y bu
 - media queries +px +em. (recomendado)
 <br>
 ---
+name:efectos
+### Efectes CSS: Transform, Transition y Animation
+
+Las animaciones y transformaciones son herramientas muy potentes para llamar la atención de los usuarios.
+
+- __Transformaciones 2D__: Modifican el espacio de coordenadas del modelo de formato visual CSS. Los elementos pueden ser trasladados, rotados, escalados o sesgados según los valores que se establecen.
+
+
+
+- __Transiciones__: Efectos que hacen que un elemento pase de tener un esto a otro. Una transición se ejecuta cuando una propiedad cambia. Una manera de provocar este cambio es mediante la pseudoclase `:hover`. 
+
+- __Animaciones__: Los elementos cambian las propiedades en un espacio de tiempo.
+
+  Primero se tiene que declara la regla `@keyframes`, para definir los valores inicial, final e intermedios.
+
+  ```css
+      @ke0yframes canvicolorfons{
+      0% {background-color: red;}
+      25% {background-color: yellow;}
+      50% {background-color: blue;}
+      100% {background-color: green;}
+    }
+```
+
+---
+
+### Ejemplo de transformaciones
+<br>
+
+<iframe height="265" style="width: 100%;" scrolling="no" title="transformacions-css" src="https://codepen.io/rglepe/embed/KEmbZx?height=365&theme-id=light&default-tab=css,result" frameborder="no" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href='https://codepen.io/rglepe/pen/KEmbZx'>transformacions-css</a> by Raul Garcia
+  (<a href='https://codepen.io/rglepe'>@rglepe</a>) on <a href='https://codepen.io'>CodePen</a>.
+</iframe>
+---
+### Ejemplo de transiciones
+<br>
+
+<iframe height="265" style="width: 100%;" scrolling="no" title="transition" src="https://codepen.io/rglepe/embed/xNZgKG?height=265&theme-id=light&default-tab=css,result" frameborder="no" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href='https://codepen.io/rglepe/pen/xNZgKG'>transition</a> by Raul Garcia
+  (<a href='https://codepen.io/rglepe'>@rglepe</a>) on <a href='https://codepen.io'>CodePen</a>.
+</iframe>
+
+---
+### Ejemplo de animaciones
+<br>
+
+<iframe height="265" style="width: 100%;" scrolling="no" title="animations-css" src="https://codepen.io/rglepe/embed/moByGe?height=265&theme-id=light&default-tab=css,result" frameborder="no" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href='https://codepen.io/rglepe/pen/moByGe'>animations-css</a> by Raul Garcia
+  (<a href='https://codepen.io/rglepe'>@rglepe</a>) on <a href='https://codepen.io'>CodePen</a>.
+</iframe>
+---
+
+### Transitions vs. Animations!
+<br><br><br>
+
+||Transiciones|	Animaciones|
+|---|---|---|
+|Inicio|	Requiere un evento que inicie la transición, CSS o JavaScript.|	No necesita evento externo. Corre automáticamente cuando se carga la página.
+|Definición de puntos intermedios|	Sólo inicio y fin|  Puede incluir tantos puntos intermedios como se quieran (_keyframes_).
+|CSS Interacción|	No cambia las propiedades CSS.|	Puede cambiar los valores dentro de su _keyframe_.|
+|Looping	|No està diseñado para looping|	No hay problemas de looping.
+
+---
+CSS Grid
+
