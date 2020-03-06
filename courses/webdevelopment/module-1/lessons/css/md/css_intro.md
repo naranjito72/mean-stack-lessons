@@ -937,7 +937,7 @@ Las animaciones y transformaciones son herramientas muy potentes para llamar la 
       50% {background-color: blue;}
       100% {background-color: green;}
     }
-```
+  ```
 
 ---
 
@@ -978,5 +978,273 @@ Las animaciones y transformaciones son herramientas muy potentes para llamar la 
 |Looping	|No està diseñado para looping|	No hay problemas de looping.
 
 ---
-CSS Grid
+name:grid
+task: [<< índice de contenidos >>](#contenido)
+
+## CSS Grid
+
+En las web complejas se necesita un sistema que simplifique la creación de los _layout_ o estructuras de sus páginas.
+
+Grid CSS crea cuadrículas sencillas y potentes de manera casi instantánea.
+
+
+<img src="https://imgur.com/bGcfrXL.png" width=50%>
+
+**Contenedor**: Elemento padre, define la cuadrícula.
+
+**Ítem**: Cada uno de los hijos que contiene la cuadrícula (elemento contenedor).
+
+**Celda** (*grid cell*): Cada uno de los cuadrados de la cuadrícula (unitat mínima).
+
+**Area** (*grid area*): Región o conjunto de celdas de la cuadrícula.
+
+**Banda** (*grid track*): Banda horitzontal o vertical de las celdas.
+
+**Línea** (*grid line*): Separador horitzontal o vertical de les celdas.
+
+---
+### Ejemplo de Grid
+
+Usamos el siguiente escenario
+
+```html
+<div class="grid"> <!-- contenedor -->
+  <div class="a">Item 1</div> <!-- ítems del grid -->
+  <div class="b">Item 2</div>
+  <div class="c">Item 3</div>
+  <div class="d">Item 4</div>
+</div>
+```
+Para activar la cuadrícula grid usamos la propiedad `display:grid`
+
+---
+### Grid con filas y columnas
+
+Usamos las propiedades CSS: `grid-template-columns` y `grid-template-rows`, que indican las dimensiones de la cuadrícula. En el ejemplo:
+
+```css
+.grid {
+  display: grid;
+  grid-template-columns: 50px 300px;
+  grid-template-rows: 200px 75px;
+}
+```
+La cuadrícula tendrá **2 columnas** (*la primera de 50px de ancho y la segunda de 300px de ancho*) i **2 filas** (*la primera de 200px de alto y la segunda de 75px de alto*). Según el número de items tendremos una cuadrícula de 2x2 elementos (*4 ítems*), 2x3 elementos (*6 ítems*), 2x4 elements (*8 ítems*) y así sucesivamente. Si el número de ítems es impar, la última celda quedará vacía
+
+![](https://imgur.com/KVu9VOU.png)
+
+---
+
+### fr: Unidad de fracción restante
+
+En aquest exemple he utilitzat **píxels** com a unitats de les cel·les de la quadrícula, no obstant això, també podem utilitzar altres unitats (i fins i tot combinar-les) com a percentatges, la paraula clau **auto** (que obté la grandària restant) o la unitat especial **fr** (*fraction*), que simbolitza una **fracció d'espai restant** en el *grid**. Vegem un codi d'exemple en acció:
+
+```css
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 2fr 1fr;
+}
+```
+Es crea una quadrícula de *2x2*, on la grandària d'ample de la quadrícula es divideix en **dues columnes** (mateixa grandària d'ample per a cadascuna), i la grandària d'alt de la quadrícula es divideix en **dues files**, on la primera ocuparà el doble (2 *fr) que la segona (1 *fr):
+
+![](https://imgur.com/NtKAc7T.png)
+
+D'aquesta forma, podem tenir un millor control de l'espai restant de la quadrícula, i com utilitzar-ho.
+
+---
+### Filas y columnas repetitivas
+
+En alguns casos, en les propietats grid-template-columns i grid-template-rows podem necessitar indicar les mateixes quantitats un nombre alt de vegades, resultant repetitiu i molest. Es pot utilitzar l'expressió ***repeat()*** per indicar repetició de valors, indicant el nombre de vegades que es repeteixen i la grandària en qüestió.
+
+L'expressió a utilitzar seria la següent: `repeat([núm de vegades], [valor o valors])`:
+
+```css
+.grid {
+  display: grid;
+  grid-template-columns: 100px repeat(2, 50px) 200px;
+  grid-template-rows: repeat(2, 50px 100px);
+}
+```
+
+Assumint que tinguèssim un contenidor grid amb 8 ítems fills (o més), l'exemple anterior crearia una quadrícula amb **4 columnes** (*la primera de 100px d'ample, la segona i tercera de 50px d'ample i la quarta de 200px d'ample*). D'altra banda, tindria **2 files** (*la primera de 50px d'alt, i la segona de 100px d'alt*). En el cas de tenir més ítems fills, el patró se seguiria repetint.
+
+L'exemple anterior seria equivalent al codi CSS següent:
+
+```css
+.grid {
+  display: grid;
+  grid-template-columns: 100px 50px 50px 200px;
+  grid-template-rows: 50px 100px 50px 100px;;
+}
+```
+---
+
+### Grid per àrees
+
+Mitjançant els *grids CSS* és possible indicar el nom i posició concreta de cada àrea d'una quadrícula. Per a això utilitzarem la propietat `grid-template-areas`, on hem d'especificar l'ordre de les àrees en la quadrícula. Posteriorment, en cada ítem fill, utilitzem la propietat `grid-area` per indicar el nom de l'àrea del que es tracta:
+
+D'aquesta forma, és molt senzill crear una quadrícula altament personalitzada en amb prou feines unes quantes línies de CSS, amb molta flexibilitat en la disposició i posició de cada àrea:
+
+<iframe height="265" style="width: 100%;" scrolling="no" title="templates-grid-css" src="http://codepen.io/rglepe/embed/PLBdgJ/?height=265&theme-id=0&default-tab=css,result" frameborder="no" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href='https://codepen.io/rglepe/pen/PLBdgJ/'>templates-grid-css</a> by Raul Garcia
+  (<a href='https://codepen.io/rglepe'>@rglepe</a>) on <a href='https://codepen.io'>CodePen</a>.
+</iframe>
+
+Aplicant aquest codi, aconseguiríem una quadrícula on:
+
+El *Item 1*, la capçalera (*head*), ocuparia tota la part superior.
+El *Item 2*, el menú (*menu*), ocuparia l'àrea esquerra del grid, sota la capçalera.
+El *Item 3*, el contingut (*main*), ocuparia l'àrea dreta del grid, sota la capçalera.
+El *Item 4*, el peu de quadrícula (*foot*), ocuparia tota la zona inferior del grid.
+
+En la propietat `grid-template-areas`, en lloc d'indicar el nom de l'àrea a col·locar, també podem indicar una paraula clau especial:
+
+* La paraula clau **none**: Indica que no es col·locarà cap cel·la en aquesta posició.
+* Un o més punts(**.**): Indica que es col·locarà una cel·la buida en aquesta posició.
+
+### Grid amb buits
+
+Per defecte, la quadrícula té totes les seves cel·les pegades a les seves cel·les contigües. Encara que seria possible donar-li un **marge** a les cel·les dins del contenidor, existeix una forma més apropiada, que evita els problemes clàssics dels models de caixa: els buits (*gutters*).
+
+Per especificar els buits (espai entre cel·les) podem utilitzar les propietats:
+*  `grid-column-gap`: Estableix la mida dels buits entre columnes (línies verticals).
+*  `grid-row-gap`: Estableix la mida dels buits entre files (línies horitzontals).
+
+Prenguem l'exemple anterior com a base. En ell, li indiquem aquestes propietats per col·locar buits entre les cel·les de la quadrícula. El codi a afegir a l'exemple anterior seria el següent:
+
+```css
+.grid {
+  grid-column-gap: 100px;
+  grid-row-gap: 10px;
+}
+```
+
+Amb això, obtindríem un resultat com el següent, indicant buits entre columnes de 100px i buits entre files de 10px.
+
+![](https://imgur.com/2Ysd5pb.png)
+
+* *short-hand*: Existeix una propietat de drecera per a les propietats `grid-column-gap` i `grid-row-gap`, permetent-nos la possibilitat de no haver d'indicar-les per separat.
+
+La propietat en qüestió seria **`grid-gap`** i s'utilitzaria de la següent forma:
+
+```css
+.grid {
+  /* grid-gap: <row-gap> <column-gap> */
+  grid-gap: 20px 80px;
+
+  /* grid-gap: <row-column-gap> */
+  grid-gap: 40px;
+  /* Equivalent a grid-gap: 40px 40px; */
+}
+```
+---
+
+### Posició en el grid
+
+Existeixen una sèrie de propietats que es poden utilitzar per col·locar els ítems dins de la quadrícula. Amb elles podem distribuir els elements d'una forma molt senzilla i còmoda. Aquestes propietats són: `justify-items` i `align-items`, de manera equivalent a **flexbox**:
+
+* **`justify-items`:**	`start | end | center | stretch`	Distribueix els elements en l'eix horitzontal.
+* **`align-items`:**	`start | end | center | stretch`	Distribueix els elements en l'eix vertical.
+
+Aquestes propietats s'apliquen sobre l'element contenidor pare, però afecten als ítems fills, per la qual cosa actuen sobre la distribució de cadascun dels fills. En el cas que vulguem que un dels ítems fills tinguin una distribució diferent a la resta, apliquem la propietat `justify-self` o `align-self` sobre l'ítem fill en qüestió, sobreescrivint la seva distribució.
+
+Aquestes propietats funcionen exactament igual que les seves anàlogues `justify-items` o `align-items`, només que en lloc d'indicar-se en l'element pare contenidor, es fa sobre un element fill. Les propietats sobre ítems fills les veurem més endavant.
+
+També podem utilitzar les propietats `justify-content` o `align-content` per modificar la distribució de tot el contingut en el seu conjunt, i no només dels ítems per separat:
+
+* **`justify-content:`**	`start | end | center | stretch | space-around | space-between | space-evenly`
+* **`align-content:`**	`start | end | center | stretch | space-around | space-between | space-evenly`
+  
+D'aquesta forma, podem controlar pràcticament tots els aspectes de posicionament de la quadrícula directament des dels estils CSS del seu contenidor pare:
+
+![](https://imgur.com/4ElWLs7.gif)
+
+---
+
+### Ajust automàtic de cel·les
+
+És possible utilitzar les propietats `grid-auto-columns` i `grid-auto-rows` per donar-li una grandària automàtica a les cel·les de la quadrícula. Per a això, només cal especificar la grandària desitjada en cadascuna de les propietats. A més, també podem utilitzar `grid-auto-flow` per indicar el flux d'elements en la quadrícula, i especificar per on s'aniran afegint. Les propietats són les següents:
+
+* **`grid-auto-columns`:**	*`mida`*	Indica la grandària automàtica d'ample que tindran les columnes.
+* **`grid-auto-rows`:**	*`mida`*	Indica la grandària automàtica d'alt que tindran les files.
+* **`grid-auto-flow`:**	*`row | column |dense`*. Utilitza un algorisme de autoposicionament (intenta emplenar buits).
+Un exemple de com s'inseririen els elements en una quadrícula de 2x2 utilitzant grid-auto-flow per columnes o per files:
+
+![](https://imgur.com/RQiTaqK.png)
+
+*short-hand*: `grid` serveix de drecera per a la majoria de propietats CSS relatives a quadrícules. El seu esquema d'utilització seria el següent, al costat d'alguns exemples:
+
+```css
+.grid {
+  /* grid: <grid-template> <grid-auto-flow> <grid-auto-rows> / <grid-auto-columns> */
+
+  grid: 100px 20px;
+  grid: 200px repeat(2, 100px) 300px;
+  grid: row;
+  grid: column dense;
+  grid: row 200px;
+  grid: row 400px / 150px;
+}
+```
+
+---
+
+### Propietats per a ítems fills
+
+Fins ara, excepte algunes excepcions com `justify-self`, `align-self` o `grid-area`, hem vist propietats CSS que s'apliquen solament al contenidor pare d'una quadrícula. A continuació, anem a veure certes propietats que en el seu lloc, s'apliquen a cada ítem fill de la quadrícula, per alterar o canviar el comportament específic d'aquest element, que no es comporta com la majoria.
+
+Algunes de les propietats vistes fins ara són les següents:
+
+* `justify-self`:	Altera la justificació de l'ítem fill en l'eix horitzontal.
+* `align-self`:	Altera l'alineació de l'ítem fill en l'eix vertical.
+* `grid-area`:	Indica un nom a l'àrea especificada, per a la seva utilització amb grid-template-areas.
+
+No obstant això, existeixen algunes propietats més, referents en aquest cas, a la posició dels fills de la quadrícula on va a començar o acabar una fila o columna. Les propietats són les següents:
+
+* `grid-column-start`:	Indica que columna començarà l'ítem de la quadrícula.
+* `grid-column-end`:	Indica que columna acabarà l'ítem de la quadrícula.
+* `grid-row-start`:	Indica que fila començarà l'ítem de la quadrícula.
+* `grid-row-end`:	Indica que fila acabarà l'ítem de la quadrícula.
+Amb aquestes propietats, podem indicar el següent codi CSS sobre el primer ítem d'una quadrícula de 4 ítems:
+
+```css
+.grid {
+  display:grid;
+}
+.a {
+  grid-column-start: 1;
+  grid-row-end: 2;
+}
+```
+
+D'aquesta forma, tenim una quadrícula de 4 elements, en el qual indiquem la posició de l'ítem 1 (element HTML amb classe .a): començant en la columna 1 i acabant en l'inici de la columna 2:
+
+Grid CSS: grid-column-start y grid-column-end
+
+Aquest seria el funcionament normal. On es veu la utilitat d'aquestes propietats, és si variem els valors de manera que prenguin posicions diferents, com per exemple, si indiquem que l'ítem 1 ha de començar en la columna 1, però acabar en la columna 3 (ocupant la hipotètica primera i segona cel·la):
+
+Grid CSS: grid-column-start y grid-column-end
+
+En aquest nou exemple, comencem el primer ítem en la columna 2 i ho acabem al principi de la columna 3, per la qual cosa la cel·la romandrà en la posició de la segona columna. A més, afegim la propietat grid-row-start que fa el mateix que fins ara, però amb les files. En aquest cas, li indiquem que comenci en la fila 3, per la qual cosa l'ítem 1 es desplaça a una nova fila de la quadrícula, deixant en l'anterior l'ítem 4:
+
+Grid CSS: grid-column-start y grid-column-end
+
+També és possible utilitzar la paraula clau `span` seguida d'un nombre, que indica que abasti fins a aquesta columna o cel·la.
+
+Drecera: grid-column i grid-row
+El mòdul grid de CSS proporciona les propietats de drecera grid-column i grid-row on se'ns permet escriure en un format abreujat les propietats anteriors. La seva sintaxi seria la següent:
+
+.grid {
+  display: grid;
+}
+
+.a {
+  /* grid-column: <grid-column-start> <grid-column-end> */
+  /* grid-row: <grid-row-start> <grid-row-end> */
+  grid-column: acte;
+  grid-column: 4 / 6;
+  grid-column: *span 3;
+  grid-column: *span 3 / 6;
+}
 
